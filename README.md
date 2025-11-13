@@ -28,96 +28,45 @@ PostgreSQL、Docker、初期データ投入まで含めた完全な手順を初�
 - **ダークモード対応**: システム設定に連動した自動切り替え
 - **アクセシビリティ**: キーボードナビゲーション・スクリーンリーダー対応
 
-## � 前提条件
+## 🚀 環境構築・セットアップ
 
-このプロジェクトを実行するには、以下がインストールされている必要があります：
+**完全な環境構築手順は：**
 
-- **Node.js** (v18.0.0以上推奨)
-  - [Node.js公式サイト](https://nodejs.org/)からダウンロード・インストール
-- **npm** (Node.jsと一緒にインストールされます)
-- **Git** (リポジトリをクローンするため)
-  - [Git公式サイト](https://git-scm.com/)からダウンロード・インストール
+👉 **[詳細な環境構築ガイド (SETUP.md)](./SETUP.md)** をご覧ください
 
-## 🛠️ プロジェクトのセットアップ
+PostgreSQL、Docker、初期データ投入まで含めた完全な手順を初学者向けに説明しています。
 
-### 1. リポジトリのクローン
-
-まず、このプロジェクトをローカル環境にクローンします：
+### クイックスタート（開発経験者向け）
 
 ```bash
-# GitHubからプロジェクトをクローン
+# リポジトリをクローン
 git clone https://github.com/h-kiyosawa/TrendWG_Remix.git
-
-# プロジェクトディレクトリに移動
 cd TrendWG_Remix
-```
 
-### 2. 依存関係のインストール
-
-プロジェクトに必要なパッケージをインストールします：
-
-```bash
-# npmを使用して依存関係をインストール
+# 依存関係をインストール
 npm install
-```
 
-💡 **初学者向け説明**: `npm install`は`package.json`に記載された全ての依存関係を自動でダウンロード・インストールします。
+# PostgreSQL環境を起動
+docker compose up -d postgres
 
-### 3. 開発サーバーの起動
-
-開発環境でアプリケーションを起動します：
-
-```bash
 # 開発サーバーを起動
 npm run dev
 ```
 
-成功すると、以下のようなメッセージが表示されます：
-```
-➜  Local:   http://localhost:5173/
-➜  Network: use --host to expose
-```
-
-### 4. アプリケーションの確認
-
-ブラウザで `http://localhost:5173/` にアクセスすると、オフィスコンビニアプリが表示されます。
-
-## 🗂️ ファイル構成
+## 🗂️ プロジェクト構成
 
 ```
 TrendWG_Remix/
-├── app/                          # アプリケーションのメインコード
-│   ├── components/               # 再利用可能なコンポーネント
-│   │   ├── CartButton.tsx        # カートボタン（右下の固定ボタン）
-│   │   ├── CartDialog.tsx        # カート内容を表示するダイアログ
-│   │   ├── OfficeConvenienceStore.tsx  # メイン画面のコンポーネント
-│   │   └── ProductTile.tsx       # 商品タイル（個別商品の表示）
-│   ├── contexts/                 # React Contextによる状態管理
-│   │   └── CartContext.tsx       # カートの状態管理
-│   ├── data/                     # データ定義
-│   │   └── products.ts           # サンプル商品データ
-│   ├── routes/                   # ページルーティング
-│   │   └── home.tsx              # ホームページ
-│   ├── types/                    # TypeScript型定義
-│   │   └── product.ts            # 商品・カート関連の型定義
-│   ├── app.css                   # グローバルスタイル
-│   ├── root.tsx                  # アプリケーションのルート
-│   └── routes.ts                 # ルート設定
-├── public/                       # 静的ファイル
-│   └── favicon.ico               # ファビコン
-├── package.json                  # プロジェクト設定・依存関係
-├── tsconfig.json                 # TypeScript設定
-├── vite.config.ts               # Vite（ビルドツール）設定
-├── react-router.config.ts       # React Router設定
+├── app/                          # React Router アプリケーション
+│   ├── components/               # UIコンポーネント
+│   ├── lib/                      # データベース抽象化レイヤー
+│   ├── services/                 # ビジネスロジック
+│   └── routes/                   # ページルーティング
+├── database/                     # PostgreSQL関連
+├── docker-compose.yml            # Docker環境設定
+├── SETUP.md                     # 詳細環境構築ガイド
 └── README.md                     # このファイル
 ```
-
-### 📁 主要ディレクトリの説明
-
-- **`app/components/`**: 画面を構成する部品（コンポーネント）を格納
-- **`app/contexts/`**: アプリ全体で共有する状態（カート情報など）を管理
-- **`app/data/`**: アプリで使用するデータ（商品情報など）を定義
-- **`app/types/`**: TypeScriptの型定義を格納
 - **`app/routes/`**: 各ページのコンポーネントを格納
 
 ## 🎨 技術スタック
@@ -161,68 +110,6 @@ TrendWG_Remix/
 - **開発環境**: PostgreSQL（Docker）で高速開発
 - **本番環境**: Firebase Firestoreでスケーラブル運用
 - **抽象化レイヤー**: データベース切り替えが簡単
-
-## 🔥 Firebase Emulator Suite の使用
-
-このプロジェクトはFirebase Emulator Suiteを使用してローカル開発ができます。
-
-### 前提条件
-
-- **Java** (JDK 11以上): Firestore Emulatorの実行に必要
-  - [OpenJDK](https://openjdk.org/) または [Oracle JDK](https://www.oracle.com/java/technologies/downloads/) をインストール
-
-### Firebase Emulatorの起動
-
-```bash
-# Firebase Emulatorを起動
-npm run firebase:emulators
-
-# または、FirestoreとAuthのみ起動
-npm run firebase:emulators:ui
-```
-
-### テストデータの投入
-
-Firebase Emulatorにテストデータを投入する方法：
-
-```bash
-# 1. Firebase Emulatorを起動（別ターミナル）
-npm run firebase:emulators
-
-# 2. テストデータを投入
-npm run firebase:seed
-
-# データをリセットして再投入
-npm run firebase:reset
-```
-
-### 投入されるテストデータ
-
-- **商品データ**: 12種類の商品（おにぎり、サンドイッチ、飲み物、お菓子など）
-- **カテゴリデータ**: 食品、飲み物、お菓子の3カテゴリ
-- **店舗設定**: 営業時間、税率、テーマカラーなど
-
-### Firebase Emulator UI
-
-Emulatorの管理画面で データの確認・編集ができます：
-
-- **Emulator UI**: http://localhost:4000
-- **Firestore**: http://localhost:8080
-- **Auth**: http://localhost:9099
-
-### 手動でのデータ追加
-
-Emulator UI（http://localhost:4000）から手動でデータを追加することも可能です：
-
-1. **Firestore Database** をクリック
-2. **Start collection** で新しいコレクションを作成
-3. Document ID と Field を入力してデータを追加
-
-### 開発時の注意事項
-
-- Emulatorのデータは永続化されません（再起動時にリセット）
-- `npm run firebase:seed` でいつでもテストデータを再投入可能
-- 本番環境では実際のFirebaseプロジェクトに接続されます
 
 ## 🏗️ 本番ビルド
 
