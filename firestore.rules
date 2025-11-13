@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 商品データの読み取りを許可
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if false; // 開発環境では商品データの書き込みは制限
+    }
+    
+    // カートデータの読み書きを許可（実際のアプリでは認証が必要）
+    match /carts/{cartId} {
+      allow read, write: if true; // 開発環境では全許可
+    }
+    
+    // 注文データの読み書きを許可
+    match /orders/{orderId} {
+      allow read, write: if true; // 開発環境では全許可
+    }
+  }
+}

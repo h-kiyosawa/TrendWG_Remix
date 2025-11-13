@@ -7,6 +7,16 @@ React Router v7とTypeScriptを使用して開発されたモダンなWebアプ�
 ![React Router](https://img.shields.io/badge/React%20Router-v7-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178c6)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-Styled-38bdf8)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ed)
+
+## 📖 クイックスタート
+
+**初学者の方・詳細な環境構築手順が必要な方は：**
+
+👉 **[詳細な環境構築ガイド (SETUP.md)](./SETUP.md)** をご覧ください
+
+PostgreSQL、Docker、初期データ投入まで含めた完全な手順を初学者向けに説明しています。
 
 ## 🚀 機能
 
@@ -127,6 +137,93 @@ TrendWG_Remix/
 4. **商品削除**: ゴミ箱アイコンで個別商品を削除
 5. **購入**: 「購入する」ボタンで購入手続き（モック機能）
 
+## ⚡ 技術スタック
+
+### フロントエンド
+- **React Router v7**: モダンなフルスタックReactフレームワーク
+- **TypeScript**: 型安全性を提供するJavaScriptの拡張
+- **Tailwind CSS**: ユーティリティファーストのCSSフレームワーク
+- **Vite**: 高速な開発サーバーとビルドツール
+
+### バックエンド・データベース
+- **PostgreSQL**: 本格的なリレーショナルデータベース
+- **Firebase**: クラウドベースのNoSQLデータベース（本番環境用）
+- **Docker**: PostgreSQL環境のコンテナ化
+- **pgAdmin**: PostgreSQL管理ツール
+
+### 開発環境
+- **Docker Compose**: 複数コンテナの管理
+- **ESLint + Prettier**: コード品質とフォーマットの統一
+- **Hot Module Replacement**: 開発時の自動リロード
+
+### データベース戦略
+このプロジェクトでは**ハイブリッド戦略**を採用：
+- **開発環境**: PostgreSQL（Docker）で高速開発
+- **本番環境**: Firebase Firestoreでスケーラブル運用
+- **抽象化レイヤー**: データベース切り替えが簡単
+
+## 🔥 Firebase Emulator Suite の使用
+
+このプロジェクトはFirebase Emulator Suiteを使用してローカル開発ができます。
+
+### 前提条件
+
+- **Java** (JDK 11以上): Firestore Emulatorの実行に必要
+  - [OpenJDK](https://openjdk.org/) または [Oracle JDK](https://www.oracle.com/java/technologies/downloads/) をインストール
+
+### Firebase Emulatorの起動
+
+```bash
+# Firebase Emulatorを起動
+npm run firebase:emulators
+
+# または、FirestoreとAuthのみ起動
+npm run firebase:emulators:ui
+```
+
+### テストデータの投入
+
+Firebase Emulatorにテストデータを投入する方法：
+
+```bash
+# 1. Firebase Emulatorを起動（別ターミナル）
+npm run firebase:emulators
+
+# 2. テストデータを投入
+npm run firebase:seed
+
+# データをリセットして再投入
+npm run firebase:reset
+```
+
+### 投入されるテストデータ
+
+- **商品データ**: 12種類の商品（おにぎり、サンドイッチ、飲み物、お菓子など）
+- **カテゴリデータ**: 食品、飲み物、お菓子の3カテゴリ
+- **店舗設定**: 営業時間、税率、テーマカラーなど
+
+### Firebase Emulator UI
+
+Emulatorの管理画面で データの確認・編集ができます：
+
+- **Emulator UI**: http://localhost:4000
+- **Firestore**: http://localhost:8080
+- **Auth**: http://localhost:9099
+
+### 手動でのデータ追加
+
+Emulator UI（http://localhost:4000）から手動でデータを追加することも可能です：
+
+1. **Firestore Database** をクリック
+2. **Start collection** で新しいコレクションを作成
+3. Document ID と Field を入力してデータを追加
+
+### 開発時の注意事項
+
+- Emulatorのデータは永続化されません（再起動時にリセット）
+- `npm run firebase:seed` でいつでもテストデータを再投入可能
+- 本番環境では実際のFirebaseプロジェクトに接続されます
+
 ## 🏗️ 本番ビルド
 
 本番環境用にビルドする場合：
@@ -175,4 +272,4 @@ npm install
 
 **開発者**: h-kiyosawa  
 **ライセンス**: MIT  
-**最終更新**: 2025年10月31日
+**最終更新**: 2025年11月13日
