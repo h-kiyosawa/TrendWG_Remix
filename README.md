@@ -36,6 +36,16 @@ PostgreSQL、Docker、初期データ投入まで含めた完全な手順を初�
 
 PostgreSQL、Docker、初期データ投入まで含めた完全な手順を初学者向けに説明しています。
 
+## 🔀 開発ワークフロー（Git運用）
+
+**Issue駆動型開発の手順は：**
+
+👉 **[Git ワークフローガイド (docs/GIT_WORKFLOW.md)](./docs/GIT_WORKFLOW.md)**
+をご覧ください
+
+TortoiseGit（GUI）とGit
+Bash（CLI）の両方の手順で、Issue作成からプルリクエストまでを説明しています。
+
 ### クイックスタート（開発経験者向け）
 
 ```bash
@@ -46,12 +56,16 @@ cd TrendWG_Remix
 # 依存関係をインストール
 npm install
 
-# PostgreSQL環境を起動
+# PostgreSQL環境を起動（テーブルとサンプルデータが自動作成されます）
 docker compose up -d postgres
 
 # 開発サーバーを起動
 npm run dev
 ```
+
+💡 **注意**: 初回の `docker compose up -d postgres`
+実行時に、`database/postgresql-setup.sql`
+が自動実行され、テーブル作成とサンプルデータ投入が行われます。
 
 ## 🗂️ プロジェクト構成
 
@@ -67,16 +81,17 @@ TrendWG_Remix/
 ├── SETUP.md                     # 詳細環境構築ガイド
 └── README.md                     # このファイル
 ```
+
 - **`app/routes/`**: 各ページのコンポーネントを格納
 
 ## 🎨 技術スタック
 
-| 技術 | 用途 | 公式サイト |
-|------|------|------------|
-| **React Router v7** | ルーティング・フレームワーク | [react-router.com](https://reactrouter.com/) |
-| **TypeScript** | 型安全な開発 | [typescriptlang.org](https://www.typescriptlang.org/) |
-| **Tailwind CSS** | スタイリング | [tailwindcss.com](https://tailwindcss.com/) |
-| **Vite** | ビルドツール・開発サーバー | [vitejs.dev](https://vitejs.dev/) |
+| 技術                | 用途                         | 公式サイト                                            |
+| ------------------- | ---------------------------- | ----------------------------------------------------- |
+| **React Router v7** | ルーティング・フレームワーク | [react-router.com](https://reactrouter.com/)          |
+| **TypeScript**      | 型安全な開発                 | [typescriptlang.org](https://www.typescriptlang.org/) |
+| **Tailwind CSS**    | スタイリング                 | [tailwindcss.com](https://tailwindcss.com/)           |
+| **Vite**            | ビルドツール・開発サーバー   | [vitejs.dev](https://vitejs.dev/)                     |
 
 ## 📱 使用方法
 
@@ -89,24 +104,29 @@ TrendWG_Remix/
 ## ⚡ 技術スタック
 
 ### フロントエンド
+
 - **React Router v7**: モダンなフルスタックReactフレームワーク
 - **TypeScript**: 型安全性を提供するJavaScriptの拡張
 - **Tailwind CSS**: ユーティリティファーストのCSSフレームワーク
 - **Vite**: 高速な開発サーバーとビルドツール
 
 ### バックエンド・データベース
+
 - **PostgreSQL**: 本格的なリレーショナルデータベース
 - **Firebase**: クラウドベースのNoSQLデータベース（本番環境用）
 - **Docker**: PostgreSQL環境のコンテナ化
 - **pgAdmin**: PostgreSQL管理ツール
 
 ### 開発環境
+
 - **Docker Compose**: 複数コンテナの管理
 - **ESLint + Prettier**: コード品質とフォーマットの統一
 - **Hot Module Replacement**: 開発時の自動リロード
 
 ### データベース戦略
+
 このプロジェクトでは**ハイブリッド戦略**を採用：
+
 - **開発環境**: PostgreSQL（Docker）で高速開発
 - **本番環境**: Firebase Firestoreでスケーラブル運用
 - **抽象化レイヤー**: データベース切り替えが簡単
@@ -136,6 +156,7 @@ npm start
 ### よくある問題と解決方法
 
 **Q: `npm install`でエラーが出る**
+
 ```bash
 # npmキャッシュをクリア
 npm cache clean --force
@@ -144,10 +165,12 @@ npm install
 ```
 
 **Q: 開発サーバーが起動しない**
+
 - Node.jsのバージョンを確認（v18以上推奨）
 - ポート5173が既に使用されていないか確認
 
 **Q: ブラウザで真っ白な画面が表示される**
+
 - ブラウザの開発者ツール（F12）でエラーを確認
 - `npm run dev`でエラーメッセージがないか確認
 
@@ -157,6 +180,6 @@ npm install
 
 ---
 
-**開発者**: h-kiyosawa  
-**ライセンス**: MIT  
+**開発者**: h-kiyosawa\
+**ライセンス**: MIT\
 **最終更新**: 2025年11月13日
