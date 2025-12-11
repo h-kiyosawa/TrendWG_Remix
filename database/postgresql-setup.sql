@@ -4,11 +4,13 @@
 -- CREATE DATABASE office_convenience_store;
 
 -- 商品テーブル
+-- image: 商品画像のパス（例: /images/products/onigiri-sake.jpg）
+--        public/images/products/ フォルダに画像を配置
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price INTEGER NOT NULL,
-    image TEXT,
+    image TEXT,                      -- 画像パス（例: /images/products/onigiri-sake.jpg）
     description TEXT,
     category VARCHAR(100) DEFAULT 'food',
     stock INTEGER DEFAULT 0,
@@ -58,19 +60,22 @@ INSERT INTO categories (name, icon, display_order) VALUES
 ON CONFLICT DO NOTHING;
 
 -- サンプル商品データの投入
+-- 画像パスは public/images/products/ 配下のファイルを参照
+-- 実際の画像ファイルは別途配置する必要があります
+-- 画像が存在しない場合は placeholder.svg が表示されます
 INSERT INTO products (name, price, image, description, category, stock) VALUES
-    ('おにぎり（鮭）', 120, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🍙 鮭%3C/text%3E%3C/svg%3E', '新鮮な鮭を使用したおにぎり', '食品', 20),
-    ('おにぎり（梅）', 110, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🍙 梅%3C/text%3E%3C/svg%3E', '定番の梅おにぎり', '食品', 25),
-    ('サンドイッチ（ハム＆チーズ）', 180, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🥪 ハム%3C/text%3E%3C/svg%3E', 'ハムとチーズのサンドイッチ', '食品', 15),
-    ('ペットボトル緑茶', 150, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🍵 緑茶%3C/text%3E%3C/svg%3E', '500ml緑茶', '飲み物', 30),
-    ('コーヒー（ブラック）', 130, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E☕ ブラック%3C/text%3E%3C/svg%3E', '缶コーヒー（無糖）', '飲み物', 20),
-    ('カップラーメン', 200, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🍜 ラーメン%3C/text%3E%3C/svg%3E', 'チキン味カップラーメン', '食品', 12),
-    ('野菜サラダ', 250, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🥗 サラダ%3C/text%3E%3C/svg%3E', 'フレッシュ野菜サラダ', '食品', 8),
-    ('チョコレート', 100, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🍫 チョコ%3C/text%3E%3C/svg%3E', 'ミルクチョコレート', 'お菓子', 35),
-    ('ポテトチップス', 120, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🍟 チップス%3C/text%3E%3C/svg%3E', 'うすしお味', 'お菓子', 25),
-    ('ヨーグルト', 80, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🥛 ヨーグルト%3C/text%3E%3C/svg%3E', 'プレーンヨーグルト', '食品', 18),
-    ('バナナ', 90, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🍌 バナナ%3C/text%3E%3C/svg%3E', '1本', '食品', 22),
-    ('アイスクリーム', 160, 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E🍦 アイス%3C/text%3E%3C/svg%3E', 'バニラアイス', 'お菓子', 10)
+    ('おにぎり（鮭）', 120, '/images/products/onigiri-sake.jpg', '新鮮な鮭を使用したおにぎり', '食品', 20),
+    ('おにぎり（梅）', 110, '/images/products/onigiri-ume.jpg', '定番の梅おにぎり', '食品', 25),
+    ('サンドイッチ（ハム＆チーズ）', 180, '/images/products/sandwich-ham-cheese.jpg', 'ハムとチーズのサンドイッチ', '食品', 15),
+    ('ペットボトル緑茶', 150, '/images/products/greentea.jpg', '500ml緑茶', '飲み物', 30),
+    ('コーヒー（ブラック）', 130, '/images/products/coffee-black.jpg', '缶コーヒー（無糖）', '飲み物', 20),
+    ('カップラーメン', 200, '/images/products/cup-ramen.jpg', 'チキン味カップラーメン', '食品', 12),
+    ('野菜サラダ', 250, '/images/products/salad.jpg', 'フレッシュ野菜サラダ', '食品', 8),
+    ('チョコレート', 100, '/images/products/chocolate.jpg', 'ミルクチョコレート', 'お菓子', 35),
+    ('ポテトチップス', 120, '/images/products/potato-chips.jpg', 'うすしお味', 'お菓子', 25),
+    ('ヨーグルト', 80, '/images/products/yogurt.jpg', 'プレーンヨーグルト', '食品', 18),
+    ('バナナ', 90, '/images/products/banana.jpg', '1本', '食品', 22),
+    ('アイスクリーム', 160, '/images/products/ice-cream.jpg', 'バニラアイス', 'お菓子', 10)
 ON CONFLICT DO NOTHING;
 
 -- 店舗設定データの投入
