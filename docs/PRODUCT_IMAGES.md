@@ -27,6 +27,18 @@ public/images/products/
 | **ファイルサイズ** | 100KB以下              | ページ読み込み速度のため |
 | **命名規則**       | 英数字とハイフンのみ   | 日本語は避ける           |
 
+### 🔄 拡張子の自動検出
+
+アプリは画像の拡張子を **自動検出** します。以下の順で探索されます：
+1. `.jpg`
+2. `.jpeg`
+3. `.webp`
+4. `.png`
+5. `.gif`
+
+そのため、**どの形式で画像を追加しても自動的に表示されます**。
+ファイル名が同じであれば、拡張子が違っても問題ありません。
+
 ### 📝 ファイル名の例
 
 ```
@@ -63,12 +75,28 @@ CREATE TABLE products (
 
 ### 新規商品の登録
 
+画像パスは **拡張子なし** で登録することを推奨します（自動検出されます）：
+
 ```sql
 INSERT INTO products (name, price, image, description, category, stock)
 VALUES (
     '新商品名',
     150,
-    '/images/products/new-product.jpg',
+    '/images/products/new-product',  -- 拡張子なし
+    '商品の説明',
+    '食品',
+    10
+);
+```
+
+拡張子ありでも動作します：
+
+```sql
+INSERT INTO products (name, price, image, description, category, stock)
+VALUES (
+    '新商品名',
+    150,
+    '/images/products/new-product.webp',  -- 拡張子あり
     '商品の説明',
     '食品',
     10
@@ -79,7 +107,7 @@ VALUES (
 
 ```sql
 UPDATE products
-SET image = '/images/products/new-image.jpg'
+SET image = '/images/products/new-image'  -- 拡張子なしでもOK
 WHERE id = 1;
 ```
 

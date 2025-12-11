@@ -1,91 +1,91 @@
 import type { Product } from '../types/product';
 
-// サンプル商品画像のプレースホルダー（実際の画像がない場合）
-const placeholderImage = 'data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="200" height="200" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="14" fill="%236b7280" text-anchor="middle" dy="0.3em"%3E商品画像%3C/text%3E%3C/svg%3E';
+// プレースホルダー画像パス
+const placeholderImage = '/images/products/placeholder.svg';
 
 export const sampleProducts: Product[] = [
   {
     id: '1',
     name: 'おにぎり（鮭）',
     price: 120,
-    image: placeholderImage,
+    image: '/images/products/onigiri-sake',  // 拡張子なし - 自動検出
     description: '北海道産の鮭を使用したおにぎり'
   },
   {
     id: '2',
     name: 'おにぎり（梅）',
     price: 110,
-    image: placeholderImage,
+    image: '/images/products/onigiri-ume',  // 拡張子なし - 自動検出
     description: '定番の梅おにぎり'
   },
   {
     id: '3',
     name: 'サンドイッチ（ハム＆チーズ）',
     price: 180,
-    image: placeholderImage,
+    image: '/images/products/sandwich-ham-cheese',
     description: 'ハムとチーズのサンドイッチ'
   },
   {
     id: '4',
     name: 'ペットボトル緑茶',
     price: 150,
-    image: placeholderImage,
+    image: '/images/products/greentea',
     description: '500ml緑茶'
   },
   {
     id: '5',
     name: 'コーヒー（ブラック）',
     price: 130,
-    image: placeholderImage,
+    image: '/images/products/coffee-black',
     description: '缶コーヒー（無糖）'
   },
   {
     id: '6',
     name: 'カップラーメン',
     price: 200,
-    image: placeholderImage,
+    image: '/images/products/cup-ramen',
     description: 'しょうゆ味カップラーメン'
   },
   {
     id: '7',
     name: '野菜サラダ',
     price: 250,
-    image: placeholderImage,
+    image: '/images/products/salad',
     description: '枝豆とレタスのサラダ'
   },
   {
     id: '8',
     name: 'チョコレート',
     price: 100,
-    image: placeholderImage,
+    image: '/images/products/chocolate',
     description: 'ミルクチョコレート'
   },
   {
     id: '9',
     name: 'ポテトチップス',
     price: 120,
-    image: placeholderImage,
+    image: '/images/products/potato-chips',
     description: 'うすしお味'
   },
   {
     id: '10',
     name: 'ヨーグルト',
     price: 80,
-    image: placeholderImage,
+    image: '/images/products/yogurt',
     description: 'プレーンヨーグルト'
   },
   {
     id: '11',
     name: 'バナナ',
     price: 90,
-    image: placeholderImage,
+    image: '/images/products/banana',
     description: '1本'
   },
   {
     id: '12',
     name: 'アイスクリーム',
     price: 160,
-    image: placeholderImage,
+    image: '/images/products/ice-cream',
     description: 'バニラアイス'
   }
 ];

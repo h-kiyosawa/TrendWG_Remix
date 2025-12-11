@@ -2,14 +2,25 @@
 
 このフォルダには商品の画像ファイルを配置します。
 
+## 🔄 拡張子の自動検出
+
+アプリは画像の拡張子を **自動検出** します。以下の順で探索されます：
+1. `.jpg`
+2. `.jpeg`
+3. `.webp`
+4. `.png`
+5. `.gif`
+
+そのため、**どの形式で画像を追加しても自動的に表示されます**。
+
 ## 📁 ファイル構成
 
 ```
 public/images/products/
 ├── README.md           # このファイル
 ├── placeholder.svg     # 画像がない場合に表示されるプレースホルダー
-├── onigiri-sake.jpg    # おにぎり（鮭）
-├── onigiri-ume.jpg     # おにぎり（梅）
+├── onigiri-sake.jpg    # おにぎり（鮭）※ .webp, .png でも可
+├── onigiri-ume.webp    # おにぎり（梅）
 ├── sandwich-ham-cheese.jpg  # サンドイッチ
 ├── greentea.jpg        # ペットボトル緑茶
 ├── coffee-black.jpg    # コーヒー（ブラック）

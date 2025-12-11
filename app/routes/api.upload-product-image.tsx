@@ -4,9 +4,31 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { DatabaseFactory } from "../lib/database";
 
+// 日本語商品名→英語ファイル名のマッピング
+const productNameMapping: Record<string, string> = {
+  'おにぎり（鮭）': 'onigiri-sake',
+  'おにぎり（梅）': 'onigiri-ume',
+  'サンドイッチ（ハム＆チーズ）': 'sandwich-ham-cheese',
+  'ペットボトル緑茶': 'greentea',
+  'コーヒー（ブラック）': 'coffee-black',
+  'カップラーメン': 'cup-ramen',
+  '野菜サラダ': 'salad',
+  'チョコレート': 'chocolate',
+  'ポテトチップス': 'potato-chips',
+  'ヨーグルト': 'yogurt',
+  'バナナ': 'banana',
+  'アイスクリーム': 'ice-cream',
+};
+
 // ファイル名を安全な形式に変換
-function sanitizeFileName(name: string): string {
-  return name
+function sanitizeFileName(name: string, productId: string): string {
+  // マッピングがあればそれを使用
+  if (productNameMapping[name]) {
+    return productNameMapping[name];
+  }
+  
+  // 英数字のみの場合はそのまま変換
+  const sanitized = name
     .toLowerCase()
     .replace(/[（(]/g, '-')
     .replace(/[）)]/g, '')
@@ -15,6 +37,9 @@ function sanitizeFileName(name: string): string {
     .replace(/[^a-z0-9\-]/g, '')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
+  
+  // 変換結果が空の場合はproduct-{id}を使用
+  return sanitized || `product-${productId}`;
 }
 
 // 拡張子を取得
@@ -67,7 +92,7 @@ export async function action({ request }: Route.ActionArgs) {
     }
 
     // ファイル名を生成
-    const safeName = sanitizeFileName(productName) || `product-${productId}`;
+    const safeName = sanitizeFileName(productName, productId);
     const extension = getExtension(imageFile.type);
     const fileName = `${safeName}${extension}`;
 
