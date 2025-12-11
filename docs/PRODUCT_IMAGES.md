@@ -12,19 +12,20 @@
 public/images/products/
 ```
 
-このフォルダに配置した画像は、アプリから `/images/products/ファイル名` のパスでアクセスできます。
+このフォルダに配置した画像は、アプリから `/images/products/ファイル名`
+のパスでアクセスできます。
 
 ---
 
 ## 🖼️ 画像ファイルの仕様
 
-| 項目 | 推奨値 | 備考 |
-|------|--------|------|
-| **形式** | JPG, PNG, WebP | WebPは最も軽量 |
-| **サイズ** | 200x200px ～ 400x400px | タブレット表示に最適 |
-| **アスペクト比** | 1:1（正方形） | カード表示で崩れない |
-| **ファイルサイズ** | 100KB以下 | ページ読み込み速度のため |
-| **命名規則** | 英数字とハイフンのみ | 日本語は避ける |
+| 項目               | 推奨値                 | 備考                     |
+| ------------------ | ---------------------- | ------------------------ |
+| **形式**           | JPG, PNG, WebP         | WebPは最も軽量           |
+| **サイズ**         | 200x200px ～ 400x400px | タブレット表示に最適     |
+| **アスペクト比**   | 1:1（正方形）          | カード表示で崩れない     |
+| **ファイルサイズ** | 100KB以下              | ページ読み込み速度のため |
+| **命名規則**       | 英数字とハイフンのみ   | 日本語は避ける           |
 
 ### 📝 ファイル名の例
 
@@ -132,12 +133,14 @@ VALUES ('新商品', 200, '/images/products/new-product.jpg', '説明', '食品'
 #### 4. Git でコミット＆プッシュ
 
 **TortoiseGit の場合：**
+
 1. プロジェクトフォルダを右クリック
 2. **TortoiseGit** → **Add** で画像を追加
 3. **TortoiseGit** → **Commit** でコミット
 4. **TortoiseGit** → **Push** でプッシュ
 
 **Git Bash の場合：**
+
 ```bash
 git add public/images/products/new-product.jpg
 git commit -m "feat: 新商品の画像を追加"
@@ -179,13 +182,13 @@ WHERE image IS NULL;
 
 ```typescript
 // React コンポーネントでの例
-<img 
-  src={product.image || '/images/products/placeholder.svg'} 
-  alt={product.name}
-  onError={(e) => {
-    e.currentTarget.src = '/images/products/placeholder.svg';
-  }}
-/>
+<img
+    src={product.image || "/images/products/placeholder.svg"}
+    alt={product.name}
+    onError={(e) => {
+        e.currentTarget.src = "/images/products/placeholder.svg";
+    }}
+/>;
 ```
 
 ---

@@ -24,13 +24,13 @@ public/images/products/
 
 ## 🖼️ 画像ファイルの仕様
 
-| 項目 | 推奨値 |
-|------|--------|
-| **形式** | JPG, PNG, WebP |
-| **サイズ** | 200x200px ～ 400x400px |
-| **アスペクト比** | 1:1（正方形） |
-| **ファイルサイズ** | 100KB以下推奨 |
-| **命名規則** | 英数字・ハイフン（例: `onigiri-sake.jpg`） |
+| 項目               | 推奨値                                     |
+| ------------------ | ------------------------------------------ |
+| **形式**           | JPG, PNG, WebP                             |
+| **サイズ**         | 200x200px ～ 400x400px                     |
+| **アスペクト比**   | 1:1（正方形）                              |
+| **ファイルサイズ** | 100KB以下推奨                              |
+| **命名規則**       | 英数字・ハイフン（例: `onigiri-sake.jpg`） |
 
 ## 📥 画像の追加方法
 
@@ -60,7 +60,8 @@ public/images/products/
 
 ## 🔄 チーム間での画像共有
 
-画像ファイルは **Git で管理** されるため、以下の手順で自動的にチーム全員に共有されます：
+画像ファイルは **Git で管理**
+されるため、以下の手順で自動的にチーム全員に共有されます：
 
 1. 画像を追加した人がコミット＆プッシュ
 2. 他のメンバーが `git pull` で取得
@@ -82,5 +83,5 @@ git pull origin main
 
 ```typescript
 // 例：画像のフォールバック処理
-const imageUrl = product.image || '/images/products/placeholder.svg';
+const imageUrl = product.image || "/images/products/placeholder.svg";
 ```
