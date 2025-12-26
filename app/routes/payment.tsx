@@ -19,27 +19,32 @@ export default function Payment() {
         padding: "30px",
         fontSize: "40px",
         fontWeight: "bold",
+        display: "flex", 
+        justifyContent: "space-between", // 左右に配置 
 
       }}
       >
         オフィスコンビニ在庫管理
-        <input
-          type="tyext"
-          placeholder="検索..."
-          style={{
-            backgroundColor: "#FFFFFF",
-            padding: "20px 45px",
-            borderRadius: "5px",   // 角を丸く
-            border: "1px solid #4e4c4cff",
-            fontSize: "25px",
+        
+        <div style={{ textAlign: "right" }}>
+          <input
+            type="tyext"
+            placeholder="検索..."
+            style={{
+              backgroundColor: "#FFFFFF",
+              padding: "20px 45px",
+              borderRadius: "5px",   // 角を丸く
+              border: "1px solid #4e4c4cff",
+              fontSize: "25px",
             
             
           }}
           />
+        </div>
     </div>
-     <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center" }}>
         <h1 style={{ 
-              fontSize: "36px",
+              fontSize: "50px",
               fontFamily: "メイリオ",
               marginTop: "50px",  //縦方向の余白出す
               }}
@@ -47,7 +52,7 @@ export default function Payment() {
               支払い選択画面
           </h1>
         <p style={{ 
-              fontSize: "32px", 
+              fontSize: "50px", 
               fontFamily: "メイリオ" 
               }}
           >
@@ -72,13 +77,13 @@ export default function Payment() {
           style={{ 
             backgroundColor: "lightgray",
             color: "black",
-            fontSize: "32px",      // 文字サイズを大きく
+            fontSize: "55px",      // 文字サイズを大きく
             padding: "25px 40px",  // ボタンの内側余白を広げる
             display:"flex",       // 画像と文字を横並びに
             marginRight: "20px",   // 右側に余白をつけて距離を離
             fontWeight:"bold",
             borderRadius: "10px",
-           }}
+          }}
           >
             <img
               src=""
@@ -92,7 +97,7 @@ export default function Payment() {
           style={{ 
             backgroundColor: "lightgray" ,
             color:"red",
-            fontSize: "32px",      // 文字サイズを大きく
+            fontSize: "55px",      // 文字サイズを大きく
             padding: "25px 40px",  // ボタンの内側余白を広げる
             display:"flex",       // 画像と文字を横並びに
             marginRight: "20px",   // 右側に余白をつけて距離を離
@@ -109,10 +114,30 @@ export default function Payment() {
           PayPay
         </button>
         </div>
+        <button 
+          onClick={() => window.history.back()} 
+            style={{ position: "fixed", 
+            bottom: "20px", 
+            left: "20px", 
+            padding: "25px 40px", 
+            fontSize: "50px", 
+            fontWeight: "bold",
+            backgroundColor: "#FF7678" , 
+            color: "white", 
+            fontFamily: "メイリオ",
+            borderRadius: "5px",
+          }} 
+        > 
+          戻る 
+        </button>
+        
+        
     </div>
-
+    
+        
     
   );
+  
 
 }
 
