@@ -85,10 +85,7 @@ export default function Payment() {
             borderRadius: "10px",
           }}
           >
-            <img
-              src=""
-              style={{width:"50px", height:"50px"}}
-              />
+            
           現金
         </button>
       
@@ -106,10 +103,7 @@ export default function Payment() {
             
           }}
           >
-            <img
-            src=""
-            style={{width:"50px", height:"50px"}}
-            />
+          
             
           PayPay
         </button>
