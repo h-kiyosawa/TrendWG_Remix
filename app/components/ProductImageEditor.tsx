@@ -163,18 +163,26 @@ export function ProductImageEditor() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">
-                商品画像管理
+                🖼️ 商品画像管理
               </h1>
               <p className="text-sm text-blue-100 dark:text-blue-200 mt-1">
                 商品を選択して画像を追加・変更できます
               </p>
             </div>
-            <a
-              href="/"
-              className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
-            >
-              ← ストアに戻る
-            </a>
+            <div className="flex gap-3">
+              <a
+                href="/admin/products-manage"
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
+              >
+                ← 商品管理に戻る
+              </a>
+              <a
+                href="/admin"
+                className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+              >
+                管理者メニュー
+              </a>
+            </div>
           </div>
         </div>
       </header>
