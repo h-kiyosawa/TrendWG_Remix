@@ -40,17 +40,17 @@ export function OfficeConvenienceStore() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">
-                Remixオフィスコンビニ (Firebase + Emulator)
+                Remixオフィスコンビニ
               </h1>
               <p className="text-sm text-orange-100 dark:text-orange-200 mt-1">
                 商品を選択して＋ボタンでカートに追加してください
               </p>
             </div>
             <a
-              href="/admin/products"
+              href="/"
               className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
             >
-              🖼️ 画像管理
+              ← トップに戻る
             </a>
           </div>
         </div>
