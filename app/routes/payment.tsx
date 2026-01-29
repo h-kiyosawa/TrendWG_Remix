@@ -11,71 +11,73 @@ export default function Payment() {
   
   return (
     <div>
-      {/*画面上部の青いバー */}
+      {/*画面上部のオレンジのバー */}
       <div
       style={{
-        backgroundColor: "#6F9CEF",
-        color: "black",
+        backgroundColor: "#FF7835",
+        color: "white",
         padding: "30px",
         fontSize: "40px",
         fontWeight: "bold",
         display: "flex", 
-        justifyContent: "space-between", // 左右に配置 
+        flexDirection: "column",
+        alignItems: "flex-start" // 左右に配置 
 
-      }}
+        }}
       >
-        オフィスコンビニ在庫管理
-        
-        <div style={{ textAlign: "right" }}>
+        <div style={{ width: "100%", 
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",}}>
+          
+          <div style={{fontSize: "40px"}}>
+            Remixオフィスコンビニ
+          </div>
           <input
-            type="tyext"
-            placeholder="検索..."
-            style={{
-              backgroundColor: "#FFFFFF",
-              padding: "20px 45px",
-              borderRadius: "5px",   // 角を丸く
-              border: "1px solid #4e4c4cff",
-              fontSize: "25px",
-            
-            
-          }}
-          />
+              type="text"
+              placeholder="検索..."
+              style={{
+                backgroundColor: "#fcf8f8ff",
+                padding: "20px 45px",
+                borderRadius: "5px",   // 角を丸く
+                border: "1px solid #f7f2f2ff",
+                fontSize: "25px",
+              }}
+          
+            />
         </div>
-    </div>
-    <div style={{ textAlign: "center" }}>
-        <h1 style={{ 
-              fontSize: "50px",
-              fontFamily: "メイリオ",
-              marginTop: "50px",  //縦方向の余白出す
-              }}
-          >
-              支払い選択画面
-          </h1>
-        <p style={{ 
-              fontSize: "50px", 
-              fontFamily: "メイリオ" 
-              }}
-          >
-            支払方法を選択してください。
-          </p>
+      
+        <div style={{fontSize: "20px",marginTop: "10px"}}>
+        支払い選択
+        </div>
       </div>
+    
+      
+      <p 
+      style={{ 
+        fontSize: "35px", 
+        fontFamily: "メイリオ" 
+      }}>
+      支払方法を選択してください。
+    </p>
+    
 
-      {/* ボタンの位置*/}
-      <div style={{ 
-        display:"flex",
-        textAlign: "center",
-        justifyContent: "center", // 横方向中央寄せ
-        alignItems: "center",     // 縦方向中央寄せ
-        gap: "100px",              // ボタン同士の間隔
-        height: "500px",          // 親要素の高さを確保（調整可能）
+    {/* ボタンの位置*/}
+    <div style={{ 
+      display:"flex",
+      textAlign: "center",
+      justifyContent: "center", // 横方向中央寄せ
+      alignItems: "center",     // 縦方向中央寄せ
+      gap: "100px",              // ボタン同士の間隔
+      height: "500px",          // 親要素の高さを確保（調整可能）
 
-        }}>
+      }}>
       
       
         
         <button
           style={{ 
-            backgroundColor: "lightgray",
+            backgroundColor: "#EDEDED",
             color: "black",
             fontSize: "55px",      // 文字サイズを大きく
             padding: "25px 40px",  // ボタンの内側余白を広げる
@@ -92,7 +94,7 @@ export default function Payment() {
         <button
         
           style={{ 
-            backgroundColor: "lightgray" ,
+            backgroundColor: "#EDEDED" ,
             color:"red",
             fontSize: "55px",      // 文字サイズを大きく
             padding: "25px 40px",  // ボタンの内側余白を広げる
@@ -113,13 +115,12 @@ export default function Payment() {
             style={{ position: "fixed", 
             bottom: "20px", 
             left: "20px", 
-            padding: "25px 40px", 
-            fontSize: "50px", 
-            fontWeight: "bold",
-            backgroundColor: "#FF7678" , 
+            padding: "5px 90px", 
+            fontSize: "35px", 
+            backgroundColor: "#FF7835" , 
             color: "white", 
             fontFamily: "メイリオ",
-            borderRadius: "5px",
+            
           }} 
         > 
           戻る 
@@ -127,6 +128,7 @@ export default function Payment() {
         
         
     </div>
+  
     
         
     

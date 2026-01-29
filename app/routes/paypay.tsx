@@ -13,7 +13,7 @@ export default function Payment() {
         {/*画面上部の青いバー */}
         <div
         style={{
-            backgroundColor: "#6F9CEF",
+            backgroundColor: "#FF7835",
             color: "black",
             padding: "30px",
             fontSize: "40px",
@@ -23,7 +23,7 @@ export default function Payment() {
 
         }}
         >
-        オフィスコンビニ在庫管理
+        Remixオフィスコンビニ
         
         <div style={{ textAlign: "right" }}>
             <input
