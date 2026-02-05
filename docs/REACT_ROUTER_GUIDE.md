@@ -1,6 +1,7 @@
 # 🎓 React Router v7 初学者向けコーディングガイド
 
-このドキュメントは、React Router v7を使った開発が**まったく初めての方**を対象としています。
+このドキュメントは、React Router
+v7を使った開発が**まったく初めての方**を対象としています。
 「何から始めればいいかわからない」という方のために、基本的な概念から実際の画面作成まで、ステップバイステップで解説します。
 
 ## 📋 目次
@@ -69,7 +70,7 @@ JavaScriptの中にHTMLのような書き方ができる記法です。
 ```tsx
 // これがJSX！HTMLっぽいけどJavaScriptの中に書ける
 function MyButton() {
-  return <button>クリックしてね</button>;
+    return <button>クリックしてね</button>;
 }
 ```
 
@@ -80,11 +81,11 @@ function MyButton() {
 ```tsx
 // 名前を受け取って挨拶するコンポーネント
 function Greeting({ name }) {
-  return <p>こんにちは、{name}さん！</p>;
+    return <p>こんにちは、{name}さん！</p>;
 }
 
 // 使う側
-<Greeting name="田中" />  // → 「こんにちは、田中さん！」と表示
+<Greeting name="田中" />; // → 「こんにちは、田中さん！」と表示
 ```
 
 ### State（ステート）とは？
@@ -94,14 +95,14 @@ function Greeting({ name }) {
 ```tsx
 // カウンターの例
 function Counter() {
-  const [count, setCount] = useState(0);  // countは現在の値、setCountは値を変える関数
+    const [count, setCount] = useState(0); // countは現在の値、setCountは値を変える関数
 
-  return (
-    <div>
-      <p>現在のカウント: {count}</p>
-      <button onClick={() => setCount(count + 1)}>+1</button>
-    </div>
-  );
+    return (
+        <div>
+            <p>現在のカウント: {count}</p>
+            <button onClick={() => setCount(count + 1)}>+1</button>
+        </div>
+    );
 }
 ```
 
@@ -117,20 +118,20 @@ import type { Route } from "./+types/home";
 
 // ① meta関数：ページのタイトルを設定
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "ページのタイトル" },                    // ブラウザのタブに表示
-    { name: "description", content: "ページの説明" }, // 検索エンジン向け
-  ];
+    return [
+        { title: "ページのタイトル" }, // ブラウザのタブに表示
+        { name: "description", content: "ページの説明" }, // 検索エンジン向け
+    ];
 }
 
 // ② メインのコンポーネント：画面の内容
 export default function Home() {
-  return (
-    <div>
-      <h1>ようこそ！</h1>
-      <p>ここに内容を書きます</p>
-    </div>
-  );
+    return (
+        <div>
+            <h1>ようこそ！</h1>
+            <p>ここに内容を書きます</p>
+        </div>
+    );
 }
 ```
 
@@ -144,11 +145,11 @@ export default function Home() {
 どのURLでどのページを表示するかを設定します。
 
 ```tsx
-import { type RouteConfig, index, route } from "@react-router/dev/routes";
+import { index, route, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
-  index("routes/home.tsx"),              // "/" でhome.tsxを表示
-  route("about", "routes/about.tsx"),    // "/about" でabout.tsxを表示
+    index("routes/home.tsx"), // "/" でhome.tsxを表示
+    route("about", "routes/about.tsx"), // "/about" でabout.tsxを表示
 ] satisfies RouteConfig;
 ```
 
@@ -171,24 +172,24 @@ import type { Route } from "./+types/about";
 
 // ページのメタ情報（タイトルなど）
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "会社概要 - Remixオフィスコンビニ" },
-    { name: "description", content: "私たちについて" },
-  ];
+    return [
+        { title: "会社概要 - Remixオフィスコンビニ" },
+        { name: "description", content: "私たちについて" },
+    ];
 }
 
 // ページの内容
 export default function About() {
-  return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-3xl font-bold text-gray-800">
-        会社概要
-      </h1>
-      <p className="mt-4 text-gray-600">
-        ここに会社の説明を書きます。
-      </p>
-    </div>
-  );
+    return (
+        <div className="min-h-screen bg-gray-50 p-8">
+            <h1 className="text-3xl font-bold text-gray-800">
+                会社概要
+            </h1>
+            <p className="mt-4 text-gray-600">
+                ここに会社の説明を書きます。
+            </p>
+        </div>
+    );
 }
 ```
 
@@ -197,11 +198,11 @@ export default function About() {
 `app/routes.ts` にルートを追加します。
 
 ```tsx
-import { type RouteConfig, index, route } from "@react-router/dev/routes";
+import { index, route, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
-  index("routes/home.tsx"),
-  route("about", "routes/about.tsx"),  // ← この行を追加
+    index("routes/home.tsx"),
+    route("about", "routes/about.tsx"), // ← この行を追加
 ] satisfies RouteConfig;
 ```
 
@@ -226,6 +227,7 @@ export default [
 `app/components/` フォルダに新しいファイルを作成します。
 
 **命名ルール**: `PascalCase`（単語の先頭を大文字）で命名
+
 - ✅ `ProductCard.tsx`
 - ✅ `UserProfile.tsx`
 - ❌ `product-card.tsx`
@@ -239,11 +241,11 @@ export default [
 // app/components/Logo.tsx
 
 export function Logo() {
-  return (
-    <div className="text-2xl font-bold text-orange-500">
-      🛒 オフィスコンビニ
-    </div>
-  );
+    return (
+        <div className="text-2xl font-bold text-orange-500">
+            🛒 オフィスコンビニ
+        </div>
+    );
 }
 ```
 
@@ -254,23 +256,27 @@ export function Logo() {
 
 // ① 型定義：このコンポーネントが受け取るデータの形
 interface ProductCardProps {
-  name: string;        // 商品名（必須）
-  price: number;       // 価格（必須）
-  image?: string;      // 画像URL（任意、?をつける）
+    name: string; // 商品名（必須）
+    price: number; // 価格（必須）
+    image?: string; // 画像URL（任意、?をつける）
 }
 
 // ② コンポーネント本体
 export function ProductCard({ name, price, image }: ProductCardProps) {
-  return (
-    <div className="bg-white rounded-lg shadow p-4">
-      {/* 画像がある場合のみ表示 */}
-      {image && (
-        <img src={image} alt={name} className="w-full h-32 object-cover" />
-      )}
-      <h3 className="font-bold mt-2">{name}</h3>
-      <p className="text-orange-500">¥{price.toLocaleString()}</p>
-    </div>
-  );
+    return (
+        <div className="bg-white rounded-lg shadow p-4">
+            {/* 画像がある場合のみ表示 */}
+            {image && (
+                <img
+                    src={image}
+                    alt={name}
+                    className="w-full h-32 object-cover"
+                />
+            )}
+            <h3 className="font-bold mt-2">{name}</h3>
+            <p className="text-orange-500">¥{price.toLocaleString()}</p>
+        </div>
+    );
 }
 ```
 
@@ -282,15 +288,15 @@ export function ProductCard({ name, price, image }: ProductCardProps) {
 import { ProductCard } from "../components/ProductCard";
 
 export default function Home() {
-  return (
-    <div className="p-8">
-      <h1>商品一覧</h1>
-      
-      {/* コンポーネントを使用 */}
-      <ProductCard name="おにぎり" price={120} />
-      <ProductCard name="お茶" price={150} image="/images/tea.jpg" />
-    </div>
-  );
+    return (
+        <div className="p-8">
+            <h1>商品一覧</h1>
+
+            {/* コンポーネントを使用 */}
+            <ProductCard name="おにぎり" price={120} />
+            <ProductCard name="お茶" price={150} image="/images/tea.jpg" />
+        </div>
+    );
 }
 ```
 
@@ -305,95 +311,95 @@ export default function Home() {
 
 ```tsx
 <div className="bg-blue-500 text-white p-4 rounded-lg">
-  青い背景、白い文字、パディング16px、角丸
-</div>
+    青い背景、白い文字、パディング16px、角丸
+</div>;
 ```
 
 ### よく使うクラス一覧
 
 #### 📐 サイズ・余白
 
-| クラス | 意味 | 例 |
-|--------|------|-----|
-| `w-full` | 幅100% | `<div className="w-full">` |
-| `h-32` | 高さ128px | `<div className="h-32">` |
-| `p-4` | 内側余白16px | `<div className="p-4">` |
-| `m-4` | 外側余白16px | `<div className="m-4">` |
-| `px-4` | 左右の内側余白 | `<div className="px-4">` |
-| `py-2` | 上下の内側余白 | `<div className="py-2">` |
-| `mt-4` | 上の外側余白 | `<div className="mt-4">` |
+| クラス   | 意味           | 例                         |
+| -------- | -------------- | -------------------------- |
+| `w-full` | 幅100%         | `<div className="w-full">` |
+| `h-32`   | 高さ128px      | `<div className="h-32">`   |
+| `p-4`    | 内側余白16px   | `<div className="p-4">`    |
+| `m-4`    | 外側余白16px   | `<div className="m-4">`    |
+| `px-4`   | 左右の内側余白 | `<div className="px-4">`   |
+| `py-2`   | 上下の内側余白 | `<div className="py-2">`   |
+| `mt-4`   | 上の外側余白   | `<div className="mt-4">`   |
 
 #### 🎨 色
 
-| クラス | 意味 |
-|--------|------|
-| `bg-white` | 背景色：白 |
-| `bg-gray-100` | 背景色：薄いグレー |
-| `bg-orange-500` | 背景色：オレンジ |
-| `text-gray-800` | 文字色：濃いグレー |
-| `text-white` | 文字色：白 |
-| `text-orange-500` | 文字色：オレンジ |
+| クラス            | 意味               |
+| ----------------- | ------------------ |
+| `bg-white`        | 背景色：白         |
+| `bg-gray-100`     | 背景色：薄いグレー |
+| `bg-orange-500`   | 背景色：オレンジ   |
+| `text-gray-800`   | 文字色：濃いグレー |
+| `text-white`      | 文字色：白         |
+| `text-orange-500` | 文字色：オレンジ   |
 
 #### 📝 テキスト
 
-| クラス | 意味 |
-|--------|------|
-| `text-sm` | 小さい文字 |
-| `text-lg` | 大きい文字 |
-| `text-xl` | より大きい文字 |
-| `text-2xl` | さらに大きい文字 |
-| `font-bold` | 太字 |
-| `text-center` | 中央揃え |
+| クラス        | 意味             |
+| ------------- | ---------------- |
+| `text-sm`     | 小さい文字       |
+| `text-lg`     | 大きい文字       |
+| `text-xl`     | より大きい文字   |
+| `text-2xl`    | さらに大きい文字 |
+| `font-bold`   | 太字             |
+| `text-center` | 中央揃え         |
 
 #### 📦 レイアウト
 
-| クラス | 意味 |
-|--------|------|
-| `flex` | フレックスボックス |
-| `flex-col` | 縦方向に並べる |
-| `items-center` | 縦方向中央揃え |
-| `justify-center` | 横方向中央揃え |
-| `justify-between` | 両端揃え |
-| `gap-4` | 要素間の余白 |
-| `grid` | グリッドレイアウト |
-| `grid-cols-3` | 3列のグリッド |
+| クラス            | 意味               |
+| ----------------- | ------------------ |
+| `flex`            | フレックスボックス |
+| `flex-col`        | 縦方向に並べる     |
+| `items-center`    | 縦方向中央揃え     |
+| `justify-center`  | 横方向中央揃え     |
+| `justify-between` | 両端揃え           |
+| `gap-4`           | 要素間の余白       |
+| `grid`            | グリッドレイアウト |
+| `grid-cols-3`     | 3列のグリッド      |
 
 #### 🔲 装飾
 
-| クラス | 意味 |
-|--------|------|
-| `rounded` | 少し角丸 |
-| `rounded-lg` | 大きめの角丸 |
-| `rounded-full` | 完全な円形 |
-| `shadow` | 影をつける |
-| `shadow-lg` | 大きい影 |
-| `border` | 枠線 |
+| クラス            | 意味         |
+| ----------------- | ------------ |
+| `rounded`         | 少し角丸     |
+| `rounded-lg`      | 大きめの角丸 |
+| `rounded-full`    | 完全な円形   |
+| `shadow`          | 影をつける   |
+| `shadow-lg`       | 大きい影     |
+| `border`          | 枠線         |
 | `border-gray-200` | グレーの枠線 |
 
 ### 実践例：カードコンポーネント
 
 ```tsx
 <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm">
-  <img 
-    src="/images/product.jpg" 
-    alt="商品画像"
-    className="w-full h-48 object-cover rounded-md"
-  />
-  <h3 className="text-xl font-bold mt-4 text-gray-800">
-    商品名
-  </h3>
-  <p className="text-gray-600 mt-2">
-    商品の説明文がここに入ります。
-  </p>
-  <div className="flex justify-between items-center mt-4">
-    <span className="text-2xl font-bold text-orange-500">
-      ¥1,200
-    </span>
-    <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
-      カートに追加
-    </button>
-  </div>
-</div>
+    <img
+        src="/images/product.jpg"
+        alt="商品画像"
+        className="w-full h-48 object-cover rounded-md"
+    />
+    <h3 className="text-xl font-bold mt-4 text-gray-800">
+        商品名
+    </h3>
+    <p className="text-gray-600 mt-2">
+        商品の説明文がここに入ります。
+    </p>
+    <div className="flex justify-between items-center mt-4">
+        <span className="text-2xl font-bold text-orange-500">
+            ¥1,200
+        </span>
+        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+            カートに追加
+        </button>
+    </div>
+</div>;
 ```
 
 ### レスポンシブデザイン
@@ -402,21 +408,23 @@ export default function Home() {
 
 ```tsx
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  {/* 
+    {
+        /*
     - スマホ: 1列
-    - タブレット(md): 2列  
+    - タブレット(md): 2列
     - PC(lg): 3列
-  */}
-</div>
+  */
+    }
+</div>;
 ```
 
-| プレフィックス | 画面幅 |
-|---------------|--------|
-| (なし) | すべて |
-| `sm:` | 640px以上 |
-| `md:` | 768px以上 |
-| `lg:` | 1024px以上 |
-| `xl:` | 1280px以上 |
+| プレフィックス | 画面幅     |
+| -------------- | ---------- |
+| (なし)         | すべて     |
+| `sm:`          | 640px以上  |
+| `md:`          | 768px以上  |
+| `lg:`          | 1024px以上 |
+| `xl:`          | 1280px以上 |
 
 ---
 
@@ -428,20 +436,22 @@ export default function Home() {
 import { useState } from "react";
 
 export function LikeButton() {
-  const [liked, setLiked] = useState(false);
+    const [liked, setLiked] = useState(false);
 
-  const handleClick = () => {
-    setLiked(!liked);  // true ↔ false を切り替え
-  };
+    const handleClick = () => {
+        setLiked(!liked); // true ↔ false を切り替え
+    };
 
-  return (
-    <button 
-      onClick={handleClick}
-      className={`px-4 py-2 rounded ${liked ? 'bg-red-500' : 'bg-gray-300'}`}
-    >
-      {liked ? '❤️ いいね済み' : '🤍 いいね'}
-    </button>
-  );
+    return (
+        <button
+            onClick={handleClick}
+            className={`px-4 py-2 rounded ${
+                liked ? "bg-red-500" : "bg-gray-300"
+            }`}
+        >
+            {liked ? "❤️ いいね済み" : "🤍 いいね"}
+        </button>
+    );
 }
 ```
 
@@ -449,21 +459,21 @@ export function LikeButton() {
 
 ```tsx
 export function ProductList() {
-  const products = [
-    { id: 1, name: "おにぎり", price: 120 },
-    { id: 2, name: "お茶", price: 150 },
-    { id: 3, name: "サンドイッチ", price: 280 },
-  ];
+    const products = [
+        { id: 1, name: "おにぎり", price: 120 },
+        { id: 2, name: "お茶", price: 150 },
+        { id: 3, name: "サンドイッチ", price: 280 },
+    ];
 
-  return (
-    <ul className="space-y-2">
-      {products.map((product) => (
-        <li key={product.id} className="p-4 bg-white rounded shadow">
-          {product.name} - ¥{product.price}
-        </li>
-      ))}
-    </ul>
-  );
+    return (
+        <ul className="space-y-2">
+            {products.map((product) => (
+                <li key={product.id} className="p-4 bg-white rounded shadow">
+                    {product.name} - ¥{product.price}
+                </li>
+            ))}
+        </ul>
+    );
 }
 ```
 
@@ -471,15 +481,11 @@ export function ProductList() {
 
 ```tsx
 export function UserStatus({ isLoggedIn }: { isLoggedIn: boolean }) {
-  return (
-    <div>
-      {isLoggedIn ? (
-        <p>ログイン中です</p>
-      ) : (
-        <p>ログインしてください</p>
-      )}
-    </div>
-  );
+    return (
+        <div>
+            {isLoggedIn ? <p>ログイン中です</p> : <p>ログインしてください</p>}
+        </div>
+    );
 }
 ```
 
@@ -489,55 +495,55 @@ export function UserStatus({ isLoggedIn }: { isLoggedIn: boolean }) {
 import { useState } from "react";
 
 export function SearchForm() {
-  const [keyword, setKeyword] = useState("");
+    const [keyword, setKeyword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();  // ページ遷移を防ぐ
-    alert(`検索キーワード: ${keyword}`);
-  };
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault(); // ページ遷移を防ぐ
+        alert(`検索キーワード: ${keyword}`);
+    };
 
-  return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input
-        type="text"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        placeholder="検索..."
-        className="border rounded px-4 py-2"
-      />
-      <button 
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        検索
-      </button>
-    </form>
-  );
+    return (
+        <form onSubmit={handleSubmit} className="flex gap-2">
+            <input
+                type="text"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="検索..."
+                className="border rounded px-4 py-2"
+            />
+            <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+                検索
+            </button>
+        </form>
+    );
 }
 ```
 
 ### パターン5: ローディング表示
 
 ```tsx
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function DataLoader() {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(null);
 
-  useEffect(() => {
-    // データを取得（2秒後に完了する想定）
-    setTimeout(() => {
-      setData({ message: "データを取得しました！" });
-      setLoading(false);
-    }, 2000);
-  }, []);
+    useEffect(() => {
+        // データを取得（2秒後に完了する想定）
+        setTimeout(() => {
+            setData({ message: "データを取得しました！" });
+            setLoading(false);
+        }, 2000);
+    }, []);
 
-  if (loading) {
-    return <div className="text-center p-8">読み込み中...</div>;
-  }
+    if (loading) {
+        return <div className="text-center p-8">読み込み中...</div>;
+    }
 
-  return <div>{data.message}</div>;
+    return <div>{data.message}</div>;
 }
 ```
 
@@ -547,31 +553,31 @@ export function DataLoader() {
 
 ### ファイル・フォルダ命名規則
 
-| 対象 | 命名規則 | 例 |
-|------|---------|-----|
-| コンポーネント | PascalCase | `ProductCard.tsx` |
-| ページ（routes） | kebab-case または 短い名前 | `about.tsx`, `user-profile.tsx` |
-| 関数 | camelCase | `handleClick`, `getUserData` |
-| 変数 | camelCase | `isLoading`, `userName` |
-| 定数 | UPPER_SNAKE_CASE | `MAX_COUNT`, `API_URL` |
-| 型・インターフェース | PascalCase | `Product`, `UserProps` |
+| 対象                 | 命名規則                   | 例                              |
+| -------------------- | -------------------------- | ------------------------------- |
+| コンポーネント       | PascalCase                 | `ProductCard.tsx`               |
+| ページ（routes）     | kebab-case または 短い名前 | `about.tsx`, `user-profile.tsx` |
+| 関数                 | camelCase                  | `handleClick`, `getUserData`    |
+| 変数                 | camelCase                  | `isLoading`, `userName`         |
+| 定数                 | UPPER_SNAKE_CASE           | `MAX_COUNT`, `API_URL`          |
+| 型・インターフェース | PascalCase                 | `Product`, `UserProps`          |
 
 ### コンポーネントの書き方
 
 ```tsx
 // ✅ 良い例
 export function ProductCard({ name, price }: ProductCardProps) {
-  return (
-    <div>
-      <h3>{name}</h3>
-      <p>{price}</p>
-    </div>
-  );
+    return (
+        <div>
+            <h3>{name}</h3>
+            <p>{price}</p>
+        </div>
+    );
 }
 
 // ❌ 悪い例（アロー関数でexport defaultは避ける）
 export default ({ name, price }) => {
-  return <div>{name}</div>;
+    return <div>{name}</div>;
 };
 ```
 
@@ -579,7 +585,7 @@ export default ({ name, price }) => {
 
 ```tsx
 // 1. React関連
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // 2. 外部ライブラリ
 import type { Route } from "./+types/home";
@@ -606,9 +612,9 @@ import "../styles/custom.css";
 
 {/* JSX内のコメント */}
 <div>
-  {/* これはコメントです */}
-  <p>テキスト</p>
-</div>
+    {/* これはコメントです */}
+    <p>テキスト</p>
+</div>;
 ```
 
 ### 型定義のルール
@@ -616,9 +622,9 @@ import "../styles/custom.css";
 ```tsx
 // インターフェースを使う（推奨）
 interface ProductProps {
-  name: string;
-  price: number;
-  description?: string;  // 任意のプロパティは ? をつける
+    name: string;
+    price: number;
+    description?: string; // 任意のプロパティは ? をつける
 }
 
 // 配列の型
@@ -626,7 +632,7 @@ const products: Product[] = [];
 
 // 関数の型
 const handleClick = (id: number): void => {
-  console.log(id);
+    console.log(id);
 };
 ```
 
@@ -643,6 +649,7 @@ Cannot find module '../components/ProductCard'
 **原因**: ファイルパスが間違っている
 
 **解決方法**:
+
 1. ファイル名のスペルを確認
 2. フォルダ構造を確認
 3. 大文字・小文字を確認（`ProductCard` ≠ `productCard`）
@@ -672,10 +679,14 @@ return <div>{user.name}</div>;
 
 ```tsx
 // ❌ エラーになる
-{products.map((p) => <div>{p.name}</div>)}
+{
+    products.map((p) => <div>{p.name}</div>);
+}
 
 // ✅ 正しい
-{products.map((p) => <div key={p.id}>{p.name}</div>)}
+{
+    products.map((p) => <div key={p.id}>{p.name}</div>);
+}
 ```
 
 **原因**: リストの各要素に `key` がない
@@ -687,10 +698,11 @@ return <div>{user.name}</div>;
 ```tsx
 // ❌ 無限ループになる
 function BadComponent() {
-  const [count, setCount] = useState(0);
-  setCount(count + 1);  // レンダリング中にsetStateを呼んでいる
-  return <div>{count}</div>;
+    const [count, setCount] = useState(0);
+    setCount(count + 1); // レンダリング中にsetStateを呼んでいる
+    return <div>{count}</div>;
 }
+```
 
 // ✅ 正しい（イベントハンドラ内で呼ぶ）
 function GoodComponent() {

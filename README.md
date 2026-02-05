@@ -40,15 +40,19 @@ PostgreSQL、Docker、初期データ投入まで含めた完全な手順を初�
 
 **Issue駆動型開発の手順は：**
 
-👉 **[Git ワークフローガイド (docs/GIT_WORKFLOW.md)](./docs/GIT_WORKFLOW.md)** をご覧ください
+👉 **[Git ワークフローガイド (docs/GIT_WORKFLOW.md)](./docs/GIT_WORKFLOW.md)**
+をご覧ください
 
-TortoiseGit（GUI）とGit Bash（CLI）の両方の手順で、Issue作成からプルリクエストまでを説明しています。
+TortoiseGit（GUI）とGit
+Bash（CLI）の両方の手順で、Issue作成からプルリクエストまでを説明しています。
 
 ## 🎓 コーディングガイド（初学者向け）
 
 **React Router v7での画面作成・コーディング方法は：**
 
-👉 **[React Router 初学者向けコーディングガイド (docs/REACT_ROUTER_GUIDE.md)](./docs/REACT_ROUTER_GUIDE.md)** をご覧ください
+👉
+**[React Router 初学者向けコーディングガイド (docs/REACT_ROUTER_GUIDE.md)](./docs/REACT_ROUTER_GUIDE.md)**
+をご覧ください
 
 「何から始めればいいかわからない」という方のために、基本概念から実際の画面作成まで丁寧に解説しています。
 
