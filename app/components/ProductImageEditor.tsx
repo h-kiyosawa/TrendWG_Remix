@@ -2,6 +2,51 @@ import { useState, useEffect, useRef } from 'react';
 import type { Product } from '../types/product';
 import { getProducts } from '../services/productService';
 
+// サポートする画像拡張子（優先順）
+const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.webp', '.png', '.gif'];
+
+// 拡張子自動検出付き画像コンポーネント
+function ProductImage({ product, className }: { product: Product; className?: string }) {
+  const [currentExtIndex, setCurrentExtIndex] = useState(0);
+  const [usePlaceholder, setUsePlaceholder] = useState(false);
+
+  // product.imageが変わったらリセット
+  useEffect(() => {
+    setCurrentExtIndex(0);
+    setUsePlaceholder(false);
+  }, [product.image]);
+
+  const getImageSrc = () => {
+    if (!product.image) return '/images/products/placeholder.svg';
+    if (usePlaceholder) return '/images/products/placeholder.svg';
+    if (product.image.startsWith('data:')) return product.image;
+    
+    const hasExtension = IMAGE_EXTENSIONS.some(ext => 
+      product.image.toLowerCase().endsWith(ext)
+    );
+    if (hasExtension) return product.image;
+    
+    return `${product.image}${IMAGE_EXTENSIONS[currentExtIndex]}`;
+  };
+
+  const handleImageError = () => {
+    if (currentExtIndex < IMAGE_EXTENSIONS.length - 1) {
+      setCurrentExtIndex(prev => prev + 1);
+    } else {
+      setUsePlaceholder(true);
+    }
+  };
+
+  return (
+    <img
+      src={getImageSrc()}
+      alt={product.name}
+      className={className}
+      onError={handleImageError}
+    />
+  );
+}
+
 export function ProductImageEditor() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -110,13 +155,6 @@ export function ProductImageEditor() {
     }
   };
 
-  const getImageSrc = (product: Product) => {
-    if (!product.image) return '/images/products/placeholder.svg';
-    // data:URLの場合はそのまま返す（旧データ対応）
-    if (product.image.startsWith('data:')) return product.image;
-    return product.image;
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* ヘッダー */}
@@ -125,18 +163,26 @@ export function ProductImageEditor() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">
-                商品画像管理
+                🖼️ 商品画像管理
               </h1>
               <p className="text-sm text-blue-100 dark:text-blue-200 mt-1">
                 商品を選択して画像を追加・変更できます
               </p>
             </div>
-            <a
-              href="/"
-              className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
-            >
-              ← ストアに戻る
-            </a>
+            <div className="flex gap-3">
+              <a
+                href="/admin/products-manage"
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
+              >
+                ← 商品管理に戻る
+              </a>
+              <a
+                href="/admin"
+                className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+              >
+                管理者メニュー
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -165,13 +211,9 @@ export function ProductImageEditor() {
                         : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >
-                    <img
-                      src={getImageSrc(product)}
-                      alt={product.name}
+                    <ProductImage
+                      product={product}
                       className="w-12 h-12 object-cover rounded"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/products/placeholder.svg';
-                      }}
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-gray-900 dark:text-white truncate">
@@ -216,13 +258,9 @@ export function ProductImageEditor() {
                     現在の画像
                   </p>
                   <div className="w-48 h-48 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
-                    <img
-                      src={getImageSrc(selectedProduct)}
-                      alt={selectedProduct.name}
+                    <ProductImage
+                      product={selectedProduct}
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/products/placeholder.svg';
-                      }}
                     />
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 break-all">
