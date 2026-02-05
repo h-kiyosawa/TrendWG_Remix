@@ -3,6 +3,7 @@ import { ProductTile } from '../components/ProductTile';
 import { getProducts, initializeSampleProducts } from '../services/productService';
 import type { Product } from '../types/product';
 
+
 export function SellManagementScreen() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
@@ -42,11 +43,13 @@ export function SellManagementScreen() {
 
     // ✅ 画像URL取得（あなたのProduct型に合わせてここだけ調整すればOK）
     const getImageUrl = (p: Product) => {
-        // すでに拡張子があればそのまま
         if (!p.image) return '/images/products/placeholder.svg';
+
+        // すでに拡張子があればそのまま
         if (/\.(jpg|jpeg|png|webp|gif|svg)$/i.test(p.image)) return p.image;
-        // 拡張子なし → .jpg優先で補完
-        return `${p.image}.jpg`;
+
+        // 拡張子なし → .jpg を優先し、次に .png を試す
+        return `${p.image}.jpg`; // デフォルトで .jpg を返す
     };
 
     return (
@@ -174,15 +177,22 @@ function ProductDetailModal({
                     <div className="p-4 space-y-4">
                         {/* 画像 */}
                         <div className="mx-auto w-40 h-40 bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center">
-                            {imageUrl ? (
-                                <img
-                                    src={imageUrl}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover"
-                                />
-                            ) : (
-                                <div className="text-gray-400 text-sm">画像がありません</div>
-                            )}
+                            <img
+                            src={imageUrl}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                                const target = e.currentTarget as HTMLImageElement;
+                                if (target.src.endsWith('.jpg')) {
+                                    // .jpg が存在しない場合、.png を試す
+                                    target.src = target.src.replace('.jpg', '.png');
+                                } else {
+                                    // .png も存在しない場合、プレースホルダー画像を表示
+                                    target.onerror = null; // 無限ループ防止
+                                    target.src = '/images/products/placeholder.svg';
+                                }
+                            }}
+                            />
                         </div>
 
                         {/* 名前 */}
