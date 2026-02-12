@@ -58,6 +58,20 @@ export function OfficeConvenienceStore() {
         ];
     };
 
+    // タイルクリック時: プラスボタン以外なら詳細モーダル
+    const handleTileClick = (product: Product) => (e: React.MouseEvent<HTMLDivElement>) => {
+        // プラスボタン（role="button" or aria-labelに"カート"含む）ならモーダル開かない
+        const target = e.target as HTMLElement;
+        if (
+            target.closest('button') &&
+            (target.closest('button')?.getAttribute('aria-label')?.includes('カート') ||
+                target.closest('button')?.innerText === '+')
+        ) {
+            return;
+        }
+        setSelectedProduct(product);
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <header className="bg-orange-500 dark:bg-orange-600 shadow-sm border-b border-orange-600 dark:border-orange-700">
@@ -119,14 +133,22 @@ export function OfficeConvenienceStore() {
                 ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                         {products.map((product) => (
-                            <button
+                            <div
                                 key={product.id}
-                                type="button"
-                                className="text-left"
-                                onClick={() => setSelectedProduct(product)}
+                                className="text-left cursor-pointer"
+                                tabIndex={0}
+                                role="button"
+                                onClick={handleTileClick(product)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        setSelectedProduct(product);
+                                    }
+                                }}
+                                aria-label={`${product.name} の詳細を表示`}
                             >
                                 <ProductTile product={product} getImageUrls={getImageUrls} />
-                            </button>
+                            </div>
                         ))}
                     </div>
                 )}
