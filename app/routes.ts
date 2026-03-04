@@ -11,6 +11,9 @@ export default [
   route("admin/products", "routes/admin.products.tsx"),
   route("admin/products-manage", "routes/admin.products-manage.tsx"),
   route("api/upload-product-image", "routes/api.upload-product-image.tsx"),
+  route("language-selection", "routes/language-selection.tsx"),
+  route("auth-Japanese", "routes/auth-Japanese.tsx"),
+  route("auth-English", "routes/auth-English.tsx"),
   route("search", "routes/search.tsx"),
 ] satisfies RouteConfig;
 
