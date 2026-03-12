@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import type { Product, Category } from "../types/product";
-import { getProducts, addProduct, updateProduct, deleteProduct } from "../services/productService";
+import type { Product, Category, InventoryLot } from "../types/product";
+import { getProducts, addProduct, updateProduct, deleteProduct, getInventoryLots, addInventoryLot, adjustInventoryLot, disposeInventoryLot } from "../services/productService";
 
 // サポートする画像拡張子（優先順）
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.webp', '.png', '.gif'];
@@ -71,7 +71,6 @@ interface ProductFormData {
   image: string;
   description: string;
   category: string;
-  stock: number;
   tags: string[];
 }
 
@@ -81,7 +80,6 @@ const emptyFormData: ProductFormData = {
   image: '',
   description: '',
   category: '食品',
-  stock: 0,
   tags: [],
 };
 
@@ -98,6 +96,14 @@ export default function AdminProductsManage() {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // 在庫ロット関連の状態
+  const [inventoryLots, setInventoryLots] = useState<InventoryLot[]>([]);
+  const [lotsLoading, setLotsLoading] = useState(false);
+  const [showAddLotDialog, setShowAddLotDialog] = useState(false);
+  const [showAdjustDialog, setShowAdjustDialog] = useState(false);
+  const [selectedLot, setSelectedLot] = useState<InventoryLot | null>(null);
+  const [lotFormData, setLotFormData] = useState({ quantity: 0, expirationDate: '', lotNumber: '' });
+  const [adjustFormData, setAdjustFormData] = useState({ newQuantity: 0, reason: '' });
   useEffect(() => {
     loadProducts();
   }, []);
@@ -115,6 +121,19 @@ export default function AdminProductsManage() {
     }
   };
 
+  const loadInventoryLots = async (productId: string) => {
+    try {
+      setLotsLoading(true);
+      const lots = await getInventoryLots(productId);
+      setInventoryLots(lots);
+    } catch (err) {
+      console.error('在庫ロットの読み込みに失敗しました:', err);
+      setInventoryLots([]);
+    } finally {
+      setLotsLoading(false);
+    }
+  };
+
   const handleSelectProduct = (product: Product) => {
     setSelectedProduct(product);
     setFormData({
@@ -123,17 +142,18 @@ export default function AdminProductsManage() {
       image: product.image || '',
       description: product.description || '',
       category: product.category || '食品',
-      stock: product.stock || 0,
       tags: product.tags || [],
     });
     setIsEditing(false);
     setIsAdding(false);
     setMessage(null);
+    loadInventoryLots(product.id);
   };
 
   const handleAddNew = () => {
     setSelectedProduct(null);
     setFormData(emptyFormData);
+    setInventoryLots([]);
     setIsAdding(true);
     setIsEditing(true);
     setMessage(null);
@@ -157,7 +177,6 @@ export default function AdminProductsManage() {
         image: selectedProduct.image || '',
         description: selectedProduct.description || '',
         category: selectedProduct.category || '食品',
-        stock: selectedProduct.stock || 0,
         tags: selectedProduct.tags || [],
       });
     }
@@ -171,15 +190,14 @@ export default function AdminProductsManage() {
       }
 
       if (isAdding) {
-        const newId = await addProduct({
+        await addProduct({
           name: formData.name,
           price: formData.price,
           image: formData.image || '/images/products/placeholder.svg',
           description: formData.description,
           category: formData.category,
-          stock: formData.stock,
         });
-        setMessage({ type: 'success', text: '商品を追加しました' });
+        setMessage({ type: 'success', text: '商品を追加しました。在庫は「在庫追加」ボタンから登録してください。' });
         setIsAdding(false);
       } else if (selectedProduct) {
         await updateProduct(selectedProduct.id, {
@@ -188,7 +206,6 @@ export default function AdminProductsManage() {
           image: formData.image,
           description: formData.description,
           category: formData.category,
-          stock: formData.stock,
         });
         setMessage({ type: 'success', text: '商品を更新しました' });
       }
@@ -204,17 +221,96 @@ export default function AdminProductsManage() {
   const handleDelete = async () => {
     if (!selectedProduct) return;
     
-    if (!confirm(`「${selectedProduct.name}」を削除しますか？`)) return;
+    if (!confirm(`「${selectedProduct.name}」を削除しますか？関連する在庫ロットもすべて削除されます。`)) return;
 
     try {
       await deleteProduct(selectedProduct.id);
       setMessage({ type: 'success', text: '商品を削除しました' });
       setSelectedProduct(null);
       setFormData(emptyFormData);
+      setInventoryLots([]);
       await loadProducts();
     } catch (err) {
       console.error('削除に失敗しました:', err);
       setMessage({ type: 'error', text: '削除に失敗しました' });
+    }
+  };
+
+  // ========== 在庫ロット操作 ==========
+
+  const handleOpenAddLotDialog = () => {
+    setLotFormData({ quantity: 1, expirationDate: '', lotNumber: '' });
+    setShowAddLotDialog(true);
+  };
+
+  const handleAddLot = async () => {
+    if (!selectedProduct) return;
+    if (lotFormData.quantity <= 0 || !lotFormData.expirationDate) {
+      setMessage({ type: 'error', text: '数量と賞味期限は必須です' });
+      return;
+    }
+    try {
+      await addInventoryLot({
+        productId: selectedProduct.id,
+        quantity: lotFormData.quantity,
+        expirationDate: lotFormData.expirationDate,
+        lotNumber: lotFormData.lotNumber || undefined,
+      });
+      setMessage({ type: 'success', text: '在庫を追加しました' });
+      setShowAddLotDialog(false);
+      await loadInventoryLots(selectedProduct.id);
+      await loadProducts(); // 合計在庫数を更新
+    } catch (err) {
+      console.error('在庫追加に失敗しました:', err);
+      setMessage({ type: 'error', text: '在庫追加に失敗しました' });
+    }
+  };
+
+  const handleOpenAdjustDialog = (lot: InventoryLot) => {
+    setSelectedLot(lot);
+    setAdjustFormData({ newQuantity: lot.quantity, reason: '' });
+    setShowAdjustDialog(true);
+  };
+
+  const handleAdjustLot = async () => {
+    if (!selectedLot || !selectedProduct) return;
+    if (adjustFormData.newQuantity < 0) {
+      setMessage({ type: 'error', text: '数量は0以上を入力してください' });
+      return;
+    }
+    if (!adjustFormData.reason.trim()) {
+      setMessage({ type: 'error', text: '調整理由を入力してください' });
+      return;
+    }
+    try {
+      await adjustInventoryLot(selectedLot.id, adjustFormData.newQuantity, adjustFormData.reason);
+      setMessage({ type: 'success', text: '在庫数を調整しました' });
+      setShowAdjustDialog(false);
+      setSelectedLot(null);
+      await loadInventoryLots(selectedProduct.id);
+      await loadProducts();
+    } catch (err) {
+      console.error('在庫調整に失敗しました:', err);
+      setMessage({ type: 'error', text: '在庫調整に失敗しました' });
+    }
+  };
+
+  const handleDisposeLot = async (lot: InventoryLot) => {
+    if (!selectedProduct) return;
+    const reason = prompt(`ロット（期限: ${lot.expirationDate}）を廃棄する理由を入力してください`);
+    if (reason === null) return; // キャンセル
+    if (!reason.trim()) {
+      setMessage({ type: 'error', text: '廃棄理由を入力してください' });
+      return;
+    }
+    try {
+      await disposeInventoryLot(lot.id, reason);
+      setMessage({ type: 'success', text: 'ロットを廃棄しました' });
+      await loadInventoryLots(selectedProduct.id);
+      await loadProducts();
+    } catch (err) {
+      console.error('廃棄に失敗しました:', err);
+      setMessage({ type: 'error', text: '廃棄に失敗しました' });
     }
   };
 
@@ -233,6 +329,18 @@ export default function AdminProductsManage() {
       ...prev,
       tags: prev.tags.filter(t => t !== tag),
     }));
+  };
+
+  // 賞味期限に応じた色を返す
+  const getExpirationColor = (dateStr: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const expDate = new Date(dateStr);
+    const diffDays = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20';
+    if (diffDays <= 3) return 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20';
+    if (diffDays <= 7) return 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20';
+    return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20';
   };
 
   // フィルタリングされた商品リスト
@@ -354,7 +462,8 @@ export default function AdminProductsManage() {
           </div>
 
           {/* 商品詳細・編集フォーム */}
-          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
             {selectedProduct || isAdding ? (
               <>
                 <div className="flex items-center justify-between mb-6">
@@ -440,15 +549,14 @@ export default function AdminProductsManage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        在庫数
+                        在庫数（合計）
                       </label>
-                      <input
-                        type="number"
-                        value={formData.stock}
-                        onChange={(e) => setFormData(prev => ({ ...prev, stock: parseInt(e.target.value) || 0 }))}
-                        disabled={!isEditing}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800"
-                      />
+                      <div className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-semibold">
+                        {selectedProduct?.stock ?? 0} 個
+                        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                          ※ 在庫ロットの合計（直接編集不可）
+                        </span>
+                      </div>
                     </div>
 
                     <div>
@@ -572,7 +680,221 @@ export default function AdminProductsManage() {
                 <p>商品を選択するか、新規追加してください</p>
               </div>
             )}
+            </div>
+
+            {/* 在庫ロット一覧セクション */}
+            {selectedProduct && !isAdding && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    📋 在庫ロット一覧
+                  </h3>
+                  <button
+                    onClick={handleOpenAddLotDialog}
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium text-sm"
+                  >
+                    ＋ 在庫追加
+                  </button>
+                </div>
+
+                {lotsLoading ? (
+                  <div className="text-center py-4 text-gray-500 dark:text-gray-400">読み込み中...</div>
+                ) : inventoryLots.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <div className="text-3xl mb-2">📭</div>
+                    <p>在庫ロットがありません</p>
+                    <p className="text-sm mt-1">「在庫追加」ボタンから在庫を登録してください</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-200 dark:border-gray-700">
+                          <th className="text-left py-2 px-3 text-gray-600 dark:text-gray-400 font-medium">ロット番号</th>
+                          <th className="text-right py-2 px-3 text-gray-600 dark:text-gray-400 font-medium">残数</th>
+                          <th className="text-left py-2 px-3 text-gray-600 dark:text-gray-400 font-medium">賞味期限</th>
+                          <th className="text-left py-2 px-3 text-gray-600 dark:text-gray-400 font-medium">入荷日</th>
+                          <th className="text-left py-2 px-3 text-gray-600 dark:text-gray-400 font-medium">状態</th>
+                          <th className="text-left py-2 px-3 text-gray-600 dark:text-gray-400 font-medium">メモ</th>
+                          <th className="text-center py-2 px-3 text-gray-600 dark:text-gray-400 font-medium">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {inventoryLots.map(lot => (
+                          <tr key={lot.id} className={`border-b border-gray-100 dark:border-gray-700 ${lot.status !== 'active' ? 'opacity-50' : ''}`}>
+                            <td className="py-2 px-3 text-gray-900 dark:text-white">
+                              {lot.lotNumber || '-'}
+                            </td>
+                            <td className="py-2 px-3 text-right font-semibold text-gray-900 dark:text-white">
+                              {lot.quantity}
+                            </td>
+                            <td className="py-2 px-3">
+                              <span className={`px-2 py-0.5 rounded text-xs font-medium ${getExpirationColor(lot.expirationDate)}`}>
+                                {lot.expirationDate}
+                              </span>
+                            </td>
+                            <td className="py-2 px-3 text-gray-600 dark:text-gray-400">
+                              {lot.receivedAt ? new Date(lot.receivedAt).toLocaleDateString('ja-JP') : '-'}
+                            </td>
+                            <td className="py-2 px-3">
+                              {lot.status === 'active' && (
+                                <span className="px-2 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-medium">有効</span>
+                              )}
+                              {lot.status === 'expired' && (
+                                <span className="px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 text-xs font-medium">期限切れ</span>
+                              )}
+                              {lot.status === 'disposed' && (
+                                <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-medium">廃棄済</span>
+                              )}
+                            </td>
+                            <td className="py-2 px-3 text-gray-600 dark:text-gray-400 text-xs max-w-[120px] truncate" title={lot.note || ''}>
+                              {lot.note || '-'}
+                            </td>
+                            <td className="py-2 px-3 text-center">
+                              {lot.status === 'active' && (
+                                <div className="flex gap-1 justify-center">
+                                  <button
+                                    onClick={() => handleOpenAdjustDialog(lot)}
+                                    className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors text-xs"
+                                    title="数量調整"
+                                  >
+                                    調整
+                                  </button>
+                                  <button
+                                    onClick={() => handleDisposeLot(lot)}
+                                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-xs"
+                                    title="廃棄"
+                                  >
+                                    廃棄
+                                  </button>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+
+          {/* 在庫追加ダイアログ */}
+          {showAddLotDialog && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md mx-4 border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  📦 在庫追加 - {selectedProduct?.name}
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      数量 *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={lotFormData.quantity}
+                      onChange={(e) => setLotFormData(prev => ({ ...prev, quantity: parseInt(e.target.value) || 0 }))}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      賞味期限 *
+                    </label>
+                    <input
+                      type="date"
+                      value={lotFormData.expirationDate}
+                      onChange={(e) => setLotFormData(prev => ({ ...prev, expirationDate: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      ロット番号（任意）
+                    </label>
+                    <input
+                      type="text"
+                      value={lotFormData.lotNumber}
+                      onChange={(e) => setLotFormData(prev => ({ ...prev, lotNumber: e.target.value }))}
+                      placeholder="例: LOT-20260212-001"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={handleAddLot}
+                    className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
+                  >
+                    追加
+                  </button>
+                  <button
+                    onClick={() => setShowAddLotDialog(false)}
+                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
+                  >
+                    キャンセル
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 数量調整ダイアログ */}
+          {showAdjustDialog && selectedLot && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md mx-4 border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  🔧 在庫数量調整
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  ロット: {selectedLot.lotNumber || '-'} / 賞味期限: {selectedLot.expirationDate} / 現在数量: {selectedLot.quantity}
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      新しい数量 *
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={adjustFormData.newQuantity}
+                      onChange={(e) => setAdjustFormData(prev => ({ ...prev, newQuantity: parseInt(e.target.value) || 0 }))}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      調整理由 *
+                    </label>
+                    <textarea
+                      value={adjustFormData.reason}
+                      onChange={(e) => setAdjustFormData(prev => ({ ...prev, reason: e.target.value }))}
+                      placeholder="例: 棚卸差異のため調整"
+                      rows={2}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={handleAdjustLot}
+                    className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors font-medium"
+                  >
+                    調整する
+                  </button>
+                  <button
+                    onClick={() => { setShowAdjustDialog(false); setSelectedLot(null); }}
+                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
+                  >
+                    キャンセル
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -1,4 +1,4 @@
-import type { Product } from '../types/product';
+import type { Product, InventoryLot, AddInventoryLotInput, ProductLotDetail } from '../types/product';
 import { sampleProducts } from '../data/products';
 import { DatabaseFactory } from '../lib/database';
 
@@ -59,6 +59,86 @@ export async function deleteProduct(productId: string): Promise<void> {
     await db.deleteProduct(productId);
   } catch (error) {
     console.error('商品の削除に失敗しました:', error);
+    throw error;
+  }
+}
+
+// ========== 在庫ロット関連 ==========
+
+/**
+ * 商品に紐づく在庫ロット一覧を取得
+ */
+export async function getInventoryLots(productId: string): Promise<InventoryLot[]> {
+  try {
+    const db = await DatabaseFactory.create();
+    return await db.getInventoryLots(productId);
+  } catch (error) {
+    console.error('在庫ロットの取得に失敗しました:', error);
+    throw error;
+  }
+}
+
+/**
+ * 在庫ロットを追加（入荷）
+ */
+export async function addInventoryLot(input: AddInventoryLotInput): Promise<string> {
+  try {
+    const db = await DatabaseFactory.create();
+    return await db.addInventoryLot(input);
+  } catch (error) {
+    console.error('在庫ロットの追加に失敗しました:', error);
+    throw error;
+  }
+}
+
+/**
+ * 在庫ロットの数量を調整
+ */
+export async function adjustInventoryLot(lotId: string, newQuantity: number, reason: string): Promise<void> {
+  try {
+    const db = await DatabaseFactory.create();
+    await db.adjustInventoryLot(lotId, newQuantity, reason);
+  } catch (error) {
+    console.error('在庫ロットの調整に失敗しました:', error);
+    throw error;
+  }
+}
+
+/**
+ * 在庫ロットを廃棄
+ */
+export async function disposeInventoryLot(lotId: string, reason: string): Promise<void> {
+  try {
+    const db = await DatabaseFactory.create();
+    await db.disposeInventoryLot(lotId, reason);
+  } catch (error) {
+    console.error('在庫ロットの廃棄に失敗しました:', error);
+    throw error;
+  }
+}
+
+/**
+ * 有効（active）な在庫ロットのみ取得（賞味期限昇順）
+ */
+export async function getActiveInventoryLots(productId: string): Promise<InventoryLot[]> {
+  try {
+    const db = await DatabaseFactory.create();
+    return await db.getActiveInventoryLots(productId);
+  } catch (error) {
+    console.error('有効在庫ロットの取得に失敗しました:', error);
+    throw error;
+  }
+}
+
+/**
+ * 商品情報＋在庫ロット詳細＋在庫サマリをまとめて取得（商品詳細画面向け）
+ */
+export async function getProductWithLots(productId: string): Promise<ProductLotDetail | null> {
+  try {
+    const db = await DatabaseFactory.create();
+    return await db.getProductWithLots(productId);
+  } catch (error) {
+    console.error('商品ロット詳細の取得に失敗しました:', error);
     throw error;
   }
 }

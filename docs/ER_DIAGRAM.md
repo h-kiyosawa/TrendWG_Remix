@@ -6,18 +6,20 @@
 
 ## テーブル一覧（物理名・論理名）
 
-| 物理名         | 論理名         | 説明                         |
-| -------------- | -------------- | ---------------------------- |
-| products       | 商品マスタ     | 販売する商品の情報を管理     |
-| cart_items     | カート明細     | ユーザーのカート内商品を管理 |
-| categories     | カテゴリマスタ | 商品カテゴリの情報を管理     |
-| store_settings | 店舗設定       | 店舗の各種設定情報を管理     |
+| 物理名         | 論理名         | 説明                               |
+| -------------- | -------------- | ---------------------------------- |
+| products       | 商品マスタ     | 販売する商品の情報を管理           |
+| inventory_lots | 在庫ロット     | 商品ごとの在庫を賞味期限単位で管理 |
+| cart_items     | カート明細     | ユーザーのカート内商品を管理       |
+| categories     | カテゴリマスタ | 商品カテゴリの情報を管理           |
+| store_settings | 店舗設定       | 店舗の各種設定情報を管理           |
 
 ## ER図（Mermaid形式）
 
 ```mermaid
 erDiagram
     products ||--o{ cart_items : "商品を含む"
+    products ||--o{ inventory_lots : "在庫ロットを持つ"
     
     products["商品マスタ (products)"] {
         SERIAL id PK "商品ID"
@@ -26,7 +28,19 @@ erDiagram
         TEXT image "商品画像パス"
         TEXT description "商品説明"
         VARCHAR100 category "カテゴリコード"
-        INTEGER stock "在庫数"
+        TIMESTAMP created_at "登録日時"
+        TIMESTAMP updated_at "更新日時"
+    }
+
+    inventory_lots["在庫ロット (inventory_lots)"] {
+        SERIAL id PK "ロットID"
+        INTEGER product_id FK "商品ID"
+        INTEGER quantity "残数"
+        DATE expiration_date "賞味期限"
+        TIMESTAMP received_at "入荷日時"
+        VARCHAR100 lot_number "ロット番号"
+        VARCHAR20 status "状態(active/expired/disposed)"
+        TEXT note "メモ"
         TIMESTAMP created_at "登録日時"
         TIMESTAMP updated_at "更新日時"
     }
@@ -70,9 +84,12 @@ erDiagram
 | image       | 商品画像パス   | TEXT         | -                         | 画像ファイルのパス（例: /images/products/onigiri-sake.jpg） |
 | description | 商品説明       | TEXT         | -                         | 商品の詳細説明文                                            |
 | category    | カテゴリコード | VARCHAR(100) | DEFAULT 'food'            | 所属カテゴリ                                                |
-| stock       | 在庫数         | INTEGER      | DEFAULT 0                 | 現在の在庫数量                                              |
 | created_at  | 登録日時       | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | レコード作成日時                                            |
 | updated_at  | 更新日時       | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | レコード更新日時                                            |
+
+> **注意:** `stock`（在庫数）カラムは廃止されました。在庫数は `inventory_lots`
+> テーブルの `SUM(quantity)` から算出します。`product_stock_summary`
+> ビューを利用してください。
 
 **インデックス:**
 
@@ -81,7 +98,43 @@ erDiagram
 
 ---
 
-### 2. cart_items（カート明細）
+### 2. inventory_lots（在庫ロット）
+
+商品の在庫を賞味期限ごとのロット単位で管理するテーブル。在庫数は各ロットの
+`quantity` を合計して算出する。
+
+| 物理名          | 論理名     | データ型     | 制約                      | 説明                        |
+| --------------- | ---------- | ------------ | ------------------------- | --------------------------- |
+| id              | ロットID   | SERIAL       | PRIMARY KEY               | 自動採番の主キー            |
+| product_id      | 商品ID     | INTEGER      | NOT NULL, FOREIGN KEY     | 商品マスタへの外部キー      |
+| quantity        | 残数       | INTEGER      | NOT NULL, DEFAULT 0       | 現在の残数                  |
+| expiration_date | 賞味期限   | DATE         | NOT NULL                  | 賞味期限日                  |
+| received_at     | 入荷日時   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | 入荷した日時                |
+| lot_number      | ロット番号 | VARCHAR(100) | -                         | 任意のロット管理番号        |
+| status          | 状態       | VARCHAR(20)  | DEFAULT 'active'          | active / expired / disposed |
+| note            | メモ       | TEXT         | -                         | 廃棄理由・調整メモ          |
+| created_at      | 登録日時   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | レコード作成日時            |
+| updated_at      | 更新日時   | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | レコード更新日時            |
+
+**制約:**
+
+- `FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE` -
+  商品削除時に連動削除
+
+**インデックス:**
+
+- `idx_inventory_lots_product_id` - 商品別ロット検索用
+- `idx_inventory_lots_expiration_date` - 賞味期限順ソート用
+- `idx_inventory_lots_status` - 状態別フィルタリング用
+
+**関連ビュー:**
+
+- `product_stock_summary` -
+  商品ごとの有効在庫合計・最短賞味期限・有効ロット数を集計
+
+---
+
+### 3. cart_items（カート明細）
 
 ユーザーがカートに入れた商品の明細を管理するトランザクションテーブル。
 
@@ -106,7 +159,7 @@ erDiagram
 
 ---
 
-### 3. categories（カテゴリマスタ）
+### 4. categories（カテゴリマスタ）
 
 商品を分類するカテゴリ情報を管理するマスタテーブル。
 
@@ -124,7 +177,7 @@ erDiagram
 
 ---
 
-### 4. store_settings（店舗設定）
+### 5. store_settings（店舗設定）
 
 店舗全体の設定情報を管理する設定テーブル。
 
@@ -165,9 +218,10 @@ erDiagram
 
 ## リレーションシップ
 
-| 親テーブル | 子テーブル | 関係 | 説明                                      |
-| ---------- | ---------- | ---- | ----------------------------------------- |
-| products   | cart_items | 1:N  | 1つの商品は複数のカートアイテムに含まれる |
+| 親テーブル | 子テーブル     | 関係 | 説明                                      |
+| ---------- | -------------- | ---- | ----------------------------------------- |
+| products   | inventory_lots | 1:N  | 1つの商品は複数の在庫ロットを持つ         |
+| products   | cart_items     | 1:N  | 1つの商品は複数のカートアイテムに含まれる |
 
 ## 備考
 

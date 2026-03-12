@@ -290,44 +290,5 @@ function ProductDetailModal({
                 </div>
             </div>
         </div>
-
-        <div className="mb-3">
-          <img
-            src={imageUrls[imgIdx]}
-            alt={product.name}
-            className="w-full object-contain max-h-64"
-            onError={() => {
-              if (imgIdx < imageUrls.length - 1) {
-                setImgIdx(imgIdx + 1);
-              }
-            }}
-            loading="lazy"
-          />
-        </div>
-
-        <dl className="space-y-1">
-          <div>
-            <dt className="text-sm text-gray-500">商品名</dt>
-            <dd className="font-medium">{product.name}</dd>
-          </div>
-          <div>
-            <dt className="text-sm text-gray-500">価格</dt>
-            <dd className="font-medium">{Number(product.price).toLocaleString()}円</dd>
-          </div>
-          {product.description && (
-            <div>
-              <dt className="text-sm text-gray-500">説明</dt>
-              <dd>{product.description}</dd>
-            </div>
-          )}
-        </dl>
-
-        <div className="mt-4 text-right">
-          <button onClick={onClose} className="border rounded px-3 py-1">
-            閉じる
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }

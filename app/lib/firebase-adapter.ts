@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import type { DatabaseAdapter } from './database';
-import type { Product, CartItem } from '../types/product';
+import type { Product, CartItem, InventoryLot, AddInventoryLotInput, ProductLotDetail } from '../types/product';
 
 export class FirebaseAdapter implements DatabaseAdapter {
   private productsCollection = collection(db, 'products');
@@ -228,5 +228,47 @@ export class FirebaseAdapter implements DatabaseAdapter {
       console.error('店舗設定の更新に失敗しました:', error);
       throw error;
     }
+  }
+
+  // ========== 在庫ロット関連（Firebase版スタブ） ==========
+
+  async getInventoryLots(productId: string): Promise<InventoryLot[]> {
+    console.warn('Firebase版の在庫ロット管理は未実装です');
+    return [];
+  }
+
+  async getActiveInventoryLots(productId: string): Promise<InventoryLot[]> {
+    console.warn('Firebase版の在庫ロット管理は未実装です');
+    return [];
+  }
+
+  async getProductWithLots(productId: string): Promise<ProductLotDetail | null> {
+    console.warn('Firebase版の在庫ロット管理は未実装です');
+    const product = await this.getProductById(productId);
+    if (!product) return null;
+    return {
+      product,
+      lots: [],
+      stockSummary: {
+        totalStock: product.stock ?? 0,
+        nearestExpiration: null,
+        activeLotCount: 0,
+      },
+    };
+  }
+
+  async addInventoryLot(input: AddInventoryLotInput): Promise<string> {
+    console.warn('Firebase版の在庫ロット管理は未実装です');
+    throw new Error('Firebase版の在庫ロット管理は未実装です');
+  }
+
+  async adjustInventoryLot(lotId: string, newQuantity: number, reason: string): Promise<void> {
+    console.warn('Firebase版の在庫ロット管理は未実装です');
+    throw new Error('Firebase版の在庫ロット管理は未実装です');
+  }
+
+  async disposeInventoryLot(lotId: string, reason: string): Promise<void> {
+    console.warn('Firebase版の在庫ロット管理は未実装です');
+    throw new Error('Firebase版の在庫ロット管理は未実装です');
   }
 }

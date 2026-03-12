@@ -1,4 +1,4 @@
-import type { Product, CartItem } from '../types/product';
+import type { Product, CartItem, InventoryLot, AddInventoryLotInput, ProductLotDetail } from '../types/product';
 
 // データベース操作の共通インターフェース
 export interface DatabaseAdapter {
@@ -8,6 +8,14 @@ export interface DatabaseAdapter {
   createProduct(product: Omit<Product, 'id'>): Promise<string>;
   updateProduct(id: string, updates: Partial<Product>): Promise<void>;
   deleteProduct(id: string): Promise<void>;
+  
+  // 在庫ロット関連
+  getInventoryLots(productId: string): Promise<InventoryLot[]>;
+  getActiveInventoryLots(productId: string): Promise<InventoryLot[]>;
+  getProductWithLots(productId: string): Promise<ProductLotDetail | null>;
+  addInventoryLot(input: AddInventoryLotInput): Promise<string>;
+  adjustInventoryLot(lotId: string, newQuantity: number, reason: string): Promise<void>;
+  disposeInventoryLot(lotId: string, reason: string): Promise<void>;
   
   // カート関連（将来的にユーザー別カートを実装するため）
   getCartItems(userId?: string): Promise<CartItem[]>;
