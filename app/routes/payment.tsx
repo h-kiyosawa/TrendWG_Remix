@@ -10,131 +10,78 @@ export function meta({}: Route.MetaArgs) {
 export default function Payment() {
   
   return (
-    <div>
-      {/*画面上部のオレンジのバー */}
-      <div
-      style={{
-        backgroundColor: "#FF7835",
-        color: "white",
-        padding: "30px",
-        fontSize: "40px",
-        fontWeight: "bold",
-        display: "flex", 
-        flexDirection: "column",
-        alignItems: "flex-start" // 左右に配置 
-
-        }}
-      >
-        <div style={{ width: "100%", 
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",}}>
-          
-          <div style={{fontSize: "40px"}}>
-            Remixオフィスコンビニ
-          </div>
-          <input
-              type="text"
-              placeholder="検索..."
-              style={{
-                backgroundColor: "#fcf8f8ff",
-                padding: "20px 45px",
-                borderRadius: "5px",   // 角を丸く
-                border: "1px solid #f7f2f2ff",
-                fontSize: "25px",
-              }}
-          
-            />
-        </div>
-      
-        <div style={{fontSize: "20px",marginTop: "10px"}}>
-        支払い選択
-        </div>
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <header className="bg-orange-500 dark:bg-orange-600 shadow-sm border-b border-orange-600 dark:border-orange-700">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold text-white">
+                                Remixオフィスコンビニ
+                            </h1>
+                            <p className="text-sm text-orange-100 dark:text-orange-200 mt-1">
+                                支払い方法を選択してください
+                            </p>
+                        </div>
+                        <a
+                            href="/"
+                            className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
+                        >
+                            ← トップに戻る
+                        </a>
+                        <form
+                            role="search"
+                            aria-label="商品検索"
+                            className="relative w-48 sm:w-64"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                const q = new FormData(e.currentTarget).get('q')?.toString().trim();
+                                if (!q) return;
+                                console.log('search:', q);
+                            }}
+                        >
+                            <input
+                                type="search"
+                                name="q"
+                                placeholder="商品名で検索"
+                                className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-white/20 placeholder-white/70 text-white
+                focus:outline-none focus:ring-2 focus:ring-white/70 focus:bg-white/25
+                transition-colors text-sm"
+                            />
+                            <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-white/80"
+                            >
+                                🔍
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </header>
     
       
-      <p 
-      style={{ 
-        fontSize: "35px", 
-        fontFamily: "メイリオ" 
-      }}>
-      支払方法を選択してください。
-    </p>
+      
     
 
-    {/* ボタンの位置*/}
-    <div style={{ 
-      display:"flex",
-      textAlign: "center",
-      justifyContent: "center", // 横方向中央寄せ
-      alignItems: "center",     // 縦方向中央寄せ
-      gap: "100px",              // ボタン同士の間隔
-      height: "500px",          // 親要素の高さを確保（調整可能）
-
-      }}>
+        <div className=" flex text-center justify-center items-center gap-[100px] h-[500px] ">
       
+        <button className=" bg-[#EDEDED] text-black text-[30px] py-[25px] px-[40px] flex mr-[20px] font-bold font-medium rounded-lg " > 🪙現金 </button>
       
-        
-        <button
-          style={{ 
-            backgroundColor: "#EDEDED",
-            color: "black",
-            fontSize: "55px",      // 文字サイズを大きく
-            padding: "25px 40px",  // ボタンの内側余白を広げる
-            display:"flex",       // 画像と文字を横並びに
-            marginRight: "20px",   // 右側に余白をつけて距離を離
-            fontWeight:"bold",
-            borderRadius: "10px",
-          }}
-          >
-            
-          現金
-        </button>
-      
-        <button
-        
-          style={{ 
-            backgroundColor: "#EDEDED" ,
-            color:"red",
-            fontSize: "55px",      // 文字サイズを大きく
-            padding: "25px 40px",  // ボタンの内側余白を広げる
-            display:"flex",       // 画像と文字を横並びに
-            marginRight: "20px",   // 右側に余白をつけて距離を離
-            fontWeight:"bold",
-            borderRadius: "10px",
-            
-          }}
-          >
-        
-            
-          PayPay
-        </button>
-        </div>
-        <button 
-          onClick={() => window.history.back()} 
-            style={{ position: "fixed", 
-            bottom: "20px", 
-            left: "20px", 
-            padding: "5px 90px", 
-            fontSize: "35px", 
-            backgroundColor: "#FF7835" , 
-            color: "white", 
-            fontFamily: "メイリオ",
-            
-          }} 
-        > 
-          戻る 
-        </button>
+        <button className=" bg-[#EDEDED] text-black text-[30px] py-[25px] px-[40px] flex mr-[20px] font-bold font-medium rounded-lg " > 📱PayPay</button>
+        <button onClick={() => window.history.back()} className=" fixed bottom-[20px] left-[50px] py-[5px] px-[50px] text-[35px] bg-[#FF7835] text-white font-medium rounded-lg " > 戻る </button>
+        <div className=" fixed top-25 right-15 bg-white text-black border border-black rounded-lg px-4 py-2 text-[25px] font-bold font-medium shadow " > 合計 1,200円 </div>
         
         
     </div>
+  </div>
+  )
+}
   
     
         
     
-  );
+  
   
 
-}
+
 
 
