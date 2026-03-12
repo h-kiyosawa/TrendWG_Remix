@@ -192,25 +192,103 @@ function ProductDetailModal({
     setImgIdx(0);
   }, [product]);
 
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="product-dialog-title"
-      className="fixed inset-0 bg-black/50 grid place-items-center p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded shadow max-w-lg w-full p-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center mb-2">
-          <h3 id="product-dialog-title" className="text-lg font-semibold">
-            商品詳細
-          </h3>
-          <button aria-label="閉じる" onClick={onClose} className="text-xl">
-            ×
-          </button>
+    return (
+        <div
+            className="fixed inset-0 z-50"
+            role="dialog"
+            aria-modal="true"
+            aria-label="商品詳細"
+        >
+            <div
+                className="absolute inset-0 bg-black/50"
+                onClick={onClose}
+            />
+            <div className="absolute inset-0 flex items-center justify-center p-4">
+                <div className="w-full max-w-md rounded-2xl bg-white dark:bg-gray-800 shadow-xl overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                        <div className="font-semibold text-gray-900 dark:text-gray-100">
+                            商品詳細
+                        </div>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="rounded-lg px-2 py-1 text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+                            aria-label="閉じる"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                    <div className="p-4 space-y-4">
+                        <div className="mx-auto w-40 h-40 bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center">
+                            <img
+                                src={imageUrls[imgIdx]}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                                onError={() => {
+                                    if (imgIdx < imageUrls.length - 1) {
+                                        setImgIdx(imgIdx + 1);
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">商品名</div>
+                            <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                                {product.name}
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">価格</div>
+                            <div className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                                {Number(product.price).toLocaleString()}円
+                            </div>
+                        </div>
+                        {product.description && (
+                            <div>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">説明</div>
+                                <div className="text-sm text-gray-900 dark:text-gray-100">
+                                    {product.description}
+                                </div>
+                            </div>
+                        )}
+                        {product.category && (
+                            <div>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">カテゴリ</div>
+                                <div className="text-sm text-gray-900 dark:text-gray-100">
+                                    {product.category}
+                                </div>
+                            </div>
+                        )}
+                        {product.stock !== undefined && (
+                            <div>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">在庫</div>
+                                <div className="text-sm text-gray-900 dark:text-gray-100">
+                                    {product.stock} 個
+                                </div>
+                            </div>
+                        )}
+                        {product.tags && product.tags.length > 0 && (
+                            <div>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">タグ</div>
+                                <div className="text-sm text-gray-900 dark:text-gray-100">
+                                    {product.tags.join(', ')}
+                                </div>
+                            </div>
+                        )}
+                        <div className="pt-2 flex gap-2">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="w-full rounded-xl px-4 py-2 bg-gray-100 hover:bg-gray-200
+                           dark:bg-gray-700 dark:hover:bg-gray-600
+                           text-gray-900 dark:text-gray-100 font-medium"
+                            >
+                                閉じる
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div className="mb-3">
